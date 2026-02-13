@@ -1,6 +1,6 @@
 import React from "react";
 
-type ButtonVariant = "default" | "outline";
+type ButtonVariant = "default" | "outline" | "ghost";
 type ButtonSize = "default" | "lg";
 
 type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
@@ -12,6 +12,7 @@ type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const classesByVariant: Record<ButtonVariant, string> = {
   default: "bg-zinc-900 text-white hover:bg-zinc-800",
   outline: "border border-zinc-300 bg-transparent text-zinc-900 hover:bg-zinc-100",
+  ghost: "bg-transparent text-zinc-700 hover:bg-zinc-100",
 };
 
 const classesBySize: Record<ButtonSize, string> = {
