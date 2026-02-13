@@ -1,10 +1,27 @@
 import type { Metadata } from "next";
+import dynamic from "next/dynamic";
 
-import { CTA } from "@/components/marketing/CTA";
 import { Features } from "@/components/marketing/Features";
 import { Hero } from "@/components/marketing/Hero";
-import { Pricing } from "@/components/marketing/Pricing";
-import { Testimonials } from "@/components/marketing/Testimonials";
+
+const Pricing = dynamic(
+  () => import("@/components/marketing/Pricing").then((mod) => mod.Pricing),
+  {
+    loading: () => (
+      <section className="bg-white py-20">
+        <div className="container mx-auto px-4">
+          <div className="h-72 animate-pulse rounded-2xl bg-zinc-100" />
+        </div>
+      </section>
+    ),
+  },
+);
+
+const Testimonials = dynamic(
+  () => import("@/components/marketing/Testimonials").then((mod) => mod.Testimonials),
+);
+
+const CTA = dynamic(() => import("@/components/marketing/CTA").then((mod) => mod.CTA));
 
 export const metadata: Metadata = {
   title: "Finflow - Master Your Canadian Finances | Personal Finance SaaS",

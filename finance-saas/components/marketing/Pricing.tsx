@@ -1,9 +1,25 @@
 "use client";
 
 import { useState } from "react";
-import { Check } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+
+function CheckIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 20 20"
+      className="mt-0.5 h-5 w-5 shrink-0 text-green-500"
+      fill="currentColor"
+    >
+      <path
+        fillRule="evenodd"
+        d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.2 7.26a1 1 0 0 1-1.42.007L3.286 9.21a1 1 0 1 1 1.428-1.4l4.095 4.175 6.481-6.53a1 1 0 0 1 1.414-.165Z"
+        clipRule="evenodd"
+      />
+    </svg>
+  );
+}
 
 const plans = [
   {
@@ -127,7 +143,7 @@ export function Pricing() {
               <ul className="space-y-3">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-start gap-3">
-                    <Check className="mt-0.5 h-5 w-5 shrink-0 text-green-500" />
+                    <CheckIcon />
                     <span className="text-gray-700">{feature}</span>
                   </li>
                 ))}

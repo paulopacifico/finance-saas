@@ -1,14 +1,6 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 
 export function MarketingNav() {
-  const [isOpen, setIsOpen] = useState(false);
-
   return (
     <nav className="sticky top-0 z-50 border-b bg-white/80 backdrop-blur-md">
       <div className="container mx-auto px-4">
@@ -30,21 +22,29 @@ export function MarketingNav() {
           </div>
 
           <div className="hidden items-center gap-4 md:flex">
-            <Button variant="ghost" asChild>
-              <Link href="/login">Login</Link>
-            </Button>
-            <Button className="bg-brand-500 hover:bg-brand-600" asChild>
-              <Link href="/signup">Start Free Trial</Link>
-            </Button>
+            <Link
+              href="/login"
+              className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
+            >
+              Login
+            </Link>
+            <Link
+              href="/signup"
+              className="rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+            >
+              Start Free Trial
+            </Link>
           </div>
-
-          <button className="md:hidden" onClick={() => setIsOpen((open) => !open)}>
-            {isOpen ? <X /> : <Menu />}
-          </button>
         </div>
 
-        {isOpen && (
-          <div className="border-t py-4 md:hidden">
+        <details className="group border-t py-2 md:hidden">
+          <summary className="flex cursor-pointer list-none items-center justify-between rounded-md px-2 py-2 text-sm font-medium text-gray-700 hover:bg-gray-100">
+            Menu
+            <span className="text-xs text-gray-500 transition-transform group-open:rotate-180">
+              ▼
+            </span>
+          </summary>
+          <div className="py-2">
             <div className="flex flex-col gap-4">
               <Link href="/#features" className="text-gray-600">
                 Features
@@ -59,12 +59,15 @@ export function MarketingNav() {
               <Link href="/login" className="text-gray-600">
                 Login
               </Link>
-              <Button className="bg-brand-500 hover:bg-brand-600" asChild>
-                <Link href="/signup">Start Free Trial</Link>
-              </Button>
+              <Link
+                href="/signup"
+                className="inline-flex w-fit rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
+              >
+                Start Free Trial
+              </Link>
             </div>
           </div>
-        )}
+        </details>
       </div>
     </nav>
   );
