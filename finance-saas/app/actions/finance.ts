@@ -6,7 +6,7 @@ import {
   Prisma,
   TransactionType,
 } from "@prisma/client";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
@@ -135,6 +135,8 @@ export async function createTransaction(formData: FormData): Promise<ActionResul
     });
 
     revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("transactions");
     return { ok: true, data: transaction };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -177,6 +179,8 @@ export async function createBudget(formData: FormData): Promise<ActionResult<{ i
     });
 
     revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("budgets");
     return { ok: true, data: budget };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -211,6 +215,9 @@ export async function updateCategory(formData: FormData): Promise<ActionResult<{
     });
 
     revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("categories");
+    revalidateTag("transactions");
     return { ok: true, data: updated };
   } catch (error) {
     if (error instanceof z.ZodError) {
