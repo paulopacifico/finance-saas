@@ -107,3 +107,10 @@ body {
 .sync-dot {
   animation: syncPulse 1.5s ease-in-out infinite;
 }
+
+.text-gradient {
+  background: linear-gradient(90deg, #0369a1 0%, #0ea5e9 55%, #22c55e 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}

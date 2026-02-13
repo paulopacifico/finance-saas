@@ -1,21 +1,54 @@
+import Image from "next/image";
+
 const features = [
-  "Conciliação de transações em CAD",
-  "Categorias e budgets por família",
-  "Dashboard com histórico e filtros",
-  "Segurança com RLS e Supabase Auth",
+  {
+    icon: "/landing/icons/feature1.svg",
+    title: "Real-time Tracking",
+    description:
+      "Monitor all your transactions in real-time with instant notifications.",
+  },
+  {
+    icon: "/landing/icons/feature2.svg",
+    title: "Smart Budgeting",
+    description:
+      "AI-powered budget recommendations based on your spending patterns.",
+  },
+  {
+    icon: "/landing/icons/feature3.svg",
+    title: "Bank Integration",
+    description:
+      "Connect all your Canadian bank accounts in one secure platform.",
+  },
 ];
 
 export function Features() {
   return (
-    <section className="grid gap-4 md:grid-cols-2">
-      {features.map((feature) => (
-        <article key={feature} className="rounded-xl border border-zinc-200 bg-white p-5">
-          <h3 className="text-sm font-semibold text-zinc-900">{feature}</h3>
-          <p className="mt-2 text-sm text-zinc-600">
-            Implementado para reduzir complexidade operacional e melhorar previsibilidade financeira.
-          </p>
-        </article>
-      ))}
+    <section className="rounded-2xl bg-zinc-50 px-4 py-20 sm:px-6 lg:px-10">
+      <div className="mx-auto w-full max-w-6xl">
+        <h2 className="text-gradient mb-12 text-center text-4xl font-bold text-zinc-900">
+          Powerful Features
+        </h2>
+
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+          {features.map((feature, index) => (
+            <article
+              key={feature.title}
+              className="animate-slide-up rounded-lg bg-white p-6 shadow-lg transition-shadow hover:shadow-xl"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <Image
+                src={feature.icon}
+                alt={feature.title}
+                width={64}
+                height={64}
+                className="mb-4"
+              />
+              <h3 className="mt-4 text-xl font-semibold text-zinc-900">{feature.title}</h3>
+              <p className="mt-2 text-zinc-600">{feature.description}</p>
+            </article>
+          ))}
+        </div>
+      </div>
     </section>
   );
 }
