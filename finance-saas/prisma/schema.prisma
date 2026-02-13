@@ -14,96 +14,152 @@ enum AccountType {
   INVESTMENT
 }
 
+enum CategoryType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
 enum TransactionType {
   INCOME
   EXPENSE
   TRANSFER
 }
 
-model Profile {
-  id              String            @id @db.Uuid
-  fullName        String?
-  defaultCurrency String            @default("CAD") @db.VarChar(3)
-  householdsOwned Household[]       @relation("HouseholdOwner")
-  households      HouseholdMember[]
-  accounts        Account[]
-  transactions    Transaction[]
-  createdAt       DateTime          @default(now())
-  updatedAt       DateTime          @updatedAt
-  deletedAt       DateTime?
-
-  @@map("profiles")
+enum TransactionStatus {
+  PENDING
+  POSTED
+  REVERSED
+  FLAGGED
 }
 
-model Household {
-  id           String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  name         String            @db.VarChar(120)
-  ownerId      String            @db.Uuid
-  owner        Profile           @relation("HouseholdOwner", fields: [ownerId], references: [id], onDelete: Restrict)
-  members      HouseholdMember[]
-  accounts     Account[]
-  transactions Transaction[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
-  deletedAt    DateTime?
-
-  @@index([ownerId])
-  @@map("households")
+enum BudgetPeriod {
+  WEEKLY
+  MONTHLY
+  QUARTERLY
+  YEARLY
 }
 
-model HouseholdMember {
-  householdId String    @db.Uuid
-  profileId   String    @db.Uuid
-  role        String    @default("member") @db.VarChar(32)
-  createdAt   DateTime  @default(now())
-  deletedAt   DateTime?
-  household   Household @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  profile     Profile   @relation(fields: [profileId], references: [id], onDelete: Cascade)
+enum FintracRiskLevel {
+  LOW
+  MEDIUM
+  HIGH
+}
 
-  @@id([householdId, profileId])
-  @@index([profileId])
-  @@map("household_members")
+model User {
+  id                String           @id @default(cuid())
+  email             String           @unique
+  fullName          String?          @db.VarChar(120)
+  defaultCurrency   String           @default("CAD") @db.VarChar(3)
+  countryCode       String           @default("CA") @db.VarChar(2)
+  provinceCode      String?          @db.VarChar(2)
+  fintracRiskLevel  FintracRiskLevel @default(LOW)
+  fintracReviewedAt DateTime?
+  accounts          Account[]
+  transactions      Transaction[]
+  categories        Category[]
+  budgets           Budget[]
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  deletedAt         DateTime?
+
+  @@map("users")
 }
 
 model Account {
-  id             String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  householdId    String        @db.Uuid
-  ownerId        String?       @db.Uuid
-  name           String        @db.VarChar(120)
-  type           AccountType
-  currency       String        @default("CAD") @db.VarChar(3)
-  openingBalance Decimal       @default(0) @db.Decimal(14, 2)
-  currentBalance Decimal       @default(0) @db.Decimal(14, 2)
-  household      Household     @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  owner          Profile?      @relation(fields: [ownerId], references: [id], onDelete: SetNull)
-  transactions   Transaction[]
-  createdAt      DateTime      @default(now())
-  updatedAt      DateTime      @updatedAt
-  deletedAt      DateTime?
+  id                 String        @id @default(cuid())
+  userId             String
+  name               String        @db.VarChar(120)
+  institutionName    String?       @db.VarChar(120)
+  accountNumberLast4 String?       @db.VarChar(4)
+  type               AccountType
+  currency           String        @default("CAD") @db.VarChar(3)
+  openingBalance     Decimal       @default(0) @db.Decimal(14, 2)
+  currentBalance     Decimal       @default(0) @db.Decimal(14, 2)
+  isActive           Boolean       @default(true)
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions       Transaction[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  deletedAt          DateTime?
 
-  @@index([householdId])
-  @@index([ownerId])
+  @@index([userId])
+  @@index([type])
   @@map("accounts")
 }
 
-model Transaction {
-  id          String          @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  householdId String          @db.Uuid
-  accountId   String          @db.Uuid
-  createdById String?         @db.Uuid
-  type        TransactionType
-  description String?         @db.VarChar(255)
-  amount      Decimal         @db.Decimal(14, 2)
-  occurredAt  DateTime
-  household   Household       @relation(fields: [householdId], references: [id], onDelete: Cascade)
-  account     Account         @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  createdBy   Profile?        @relation(fields: [createdById], references: [id], onDelete: SetNull)
-  createdAt   DateTime        @default(now())
-  updatedAt   DateTime        @updatedAt
-  deletedAt   DateTime?
+model Category {
+  id           String        @id @default(cuid())
+  userId       String
+  name         String        @db.VarChar(100)
+  type         CategoryType
+  isSystem     Boolean       @default(false)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+  budgets      Budget[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
 
-  @@index([householdId, occurredAt(sort: Desc)])
-  @@index([accountId, occurredAt(sort: Desc)])
-  @@index([createdById])
+  @@unique([userId, name, type])
+  @@index([userId, type])
+  @@map("categories")
+}
+
+model Budget {
+  id           String        @id @default(cuid())
+  userId       String
+  categoryId   String?
+  name         String        @db.VarChar(120)
+  period       BudgetPeriod  @default(MONTHLY)
+  periodStart  DateTime
+  periodEnd    DateTime
+  limitAmount  Decimal       @db.Decimal(14, 2)
+  spentAmount  Decimal       @default(0) @db.Decimal(14, 2)
+  currency     String        @default("CAD") @db.VarChar(3)
+  isActive     Boolean       @default(true)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category     Category?     @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  transactions Transaction[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  deletedAt    DateTime?
+
+  @@index([userId, periodStart, periodEnd])
+  @@index([categoryId])
+  @@map("budgets")
+}
+
+model Transaction {
+  id                String            @id @default(cuid())
+  userId            String
+  accountId         String
+  categoryId        String
+  budgetId          String?
+  type              TransactionType
+  status            TransactionStatus @default(POSTED)
+  amount            Decimal           @db.Decimal(14, 2)
+  currency          String            @default("CAD") @db.VarChar(3)
+  description       String?           @db.VarChar(255)
+  merchantName      String?           @db.VarChar(120)
+  referenceCode     String?           @db.VarChar(64)
+  transactionAt     DateTime
+  postedAt          DateTime?
+  fintracReportable Boolean           @default(false)
+  fintracReportedAt DateTime?
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account           Account           @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category          Category          @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  budget            Budget?           @relation(fields: [budgetId], references: [id], onDelete: SetNull)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+  deletedAt         DateTime?
+
+  @@index([userId, transactionAt(sort: Desc)])
+  @@index([accountId, transactionAt(sort: Desc)])
+  @@index([categoryId])
+  @@index([budgetId])
+  @@index([status])
+  @@index([fintracReportable, transactionAt(sort: Desc)])
   @@map("transactions")
 }
