@@ -1,0 +1,21 @@
+<svg width="1200" height="1000" viewBox="0 0 1200 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect x="80" y="80" width="1040" height="840" rx="36" fill="#111827"/>
+  <rect x="120" y="140" width="300" height="180" rx="20" fill="#1F2937"/>
+  <rect x="138" y="176" width="120" height="16" rx="8" fill="#374151"/>
+  <rect x="138" y="206" width="200" height="28" rx="10" fill="#10B981"/>
+  <rect x="438" y="140" width="300" height="180" rx="20" fill="#1F2937"/>
+  <rect x="456" y="176" width="120" height="16" rx="8" fill="#374151"/>
+  <rect x="456" y="206" width="200" height="28" rx="10" fill="#EF4444"/>
+  <rect x="756" y="140" width="324" height="180" rx="20" fill="#1F2937"/>
+  <rect x="774" y="176" width="180" height="16" rx="8" fill="#374151"/>
+  <rect x="774" y="206" width="140" height="24" rx="10" fill="#0EA5E9"/>
+  <rect x="120" y="356" width="960" height="500" rx="24" fill="#111827" stroke="#374151"/>
+  <path d="M170 770C240 700 290 640 360 620C430 600 480 660 550 650C620 640 680 560 750 550C820 540 870 620 940 600C980 590 1020 560 1030 530V820H170V770Z" fill="url(#chart)"/>
+  <path d="M170 770C240 700 290 640 360 620C430 600 480 660 550 650C620 640 680 560 750 550C820 540 870 620 940 600C980 590 1020 560 1030 530" stroke="#22C55E" stroke-width="8" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="chart" x1="600" y1="530" x2="600" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C55E" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#22C55E" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
