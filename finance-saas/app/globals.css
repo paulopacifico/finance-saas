@@ -1,26 +1,109 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #0a0d0a;
+  --foreground: #f4f4f5;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: #0a0d0a;
+  --color-secondary: #0d110d;
+  --color-card: #111611;
+  --color-card-hover: #151a15;
+  --color-elevated: #1a1f1a;
+  --color-accent: #4ade80;
+  --color-accent-dim: #22c55e;
+  --font-sans: var(--font-dm-sans);
+  --font-serif: var(--font-playfair-display);
+  --animate-fade-in: fadeIn 0.6s ease-out;
+  --animate-fade-in-up: fadeInUp 0.6s ease-out;
+  --animate-fade-in-up-delay-1: fadeInUp 0.6s ease-out 0.1s backwards;
+  --animate-fade-in-up-delay-2: fadeInUp 0.6s ease-out 0.2s backwards;
+  --animate-fade-in-up-delay-3: fadeInUp 0.6s ease-out 0.3s backwards;
+  --animate-fade-in-delay-4: fadeIn 0.8s ease-out 0.4s backwards;
+  --animate-sync-pulse: syncPulse 1.5s ease-in-out infinite;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes syncPulse {
+  0%,
+  100% {
+    left: 0;
+  }
+  50% {
+    left: calc(100% - 8px);
+  }
+}
+
+::selection {
+  background: #4ade80;
+  color: #0a0d0a;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+.accent-glow {
+  background: rgba(74, 222, 128, 0.12);
+}
+
+.accent-glow-strong {
+  box-shadow: 0 0 60px rgba(74, 222, 128, 0.15);
+}
+
+.border-accent-subtle {
+  border-color: rgba(74, 222, 128, 0.08);
+}
+
+.border-accent-hover {
+  border-color: rgba(74, 222, 128, 0.2);
+}
+
+.bg-white-3 {
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.bg-white-5 {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.bg-white-8 {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.chart-gradient {
+  fill: url(#chartGradient);
+}
+
+.gauge-gradient {
+  stroke: url(#gaugeGradient);
+}
+
+.sync-dot {
+  animation: syncPulse 1.5s ease-in-out infinite;
 }
