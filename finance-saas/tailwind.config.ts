@@ -45,7 +45,7 @@ const config: Config = {
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "hero-pattern": "url('/landing/images/hero-bg.svg')",
+        "hero-pattern": "url('/landing/images/hero-bg.webp')",
       },
     },
   },

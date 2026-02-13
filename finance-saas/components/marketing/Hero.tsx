@@ -58,7 +58,7 @@ export function Hero() {
 
         <div className="relative animate-float">
           <Image
-            src="/landing/images/hero-dashboard.svg"
+            src="/landing/images/hero-dashboard.webp"
             alt="Finflow Dashboard Preview"
             width={600}
             height={500}

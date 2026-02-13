@@ -2,19 +2,19 @@ import Image from "next/image";
 
 const features = [
   {
-    icon: "/landing/icons/feature1.svg",
+    icon: "/landing/icons/feature1.webp",
     title: "Real-time Tracking",
     description:
       "Monitor all your transactions in real-time with instant notifications.",
   },
   {
-    icon: "/landing/icons/feature2.svg",
+    icon: "/landing/icons/feature2.webp",
     title: "Smart Budgeting",
     description:
       "AI-powered budget recommendations based on your spending patterns.",
   },
   {
-    icon: "/landing/icons/feature3.svg",
+    icon: "/landing/icons/feature3.webp",
     title: "Bank Integration",
     description:
       "Connect all your Canadian bank accounts in one secure platform.",
