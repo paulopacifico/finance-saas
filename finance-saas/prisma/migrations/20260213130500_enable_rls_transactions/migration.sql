@@ -1,0 +1,1 @@
+ALTER TABLE public.transactions ENABLE ROW LEVEL SECURITY;
