@@ -72,16 +72,22 @@ const updateCategorySchema = z
     },
   );
 
-const toFieldErrors = (error: z.ZodError): Record<string, string[]> =>
-  Object.entries(error.flatten().fieldErrors).reduce<Record<string, string[]>>(
+const toFieldErrors = (error: z.ZodError): Record<string, string[]> => {
+  const fieldErrors = error.flatten().fieldErrors as Record<
+    string,
+    string[] | undefined
+  >;
+
+  return Object.entries(fieldErrors).reduce<Record<string, string[]>>(
     (acc, [key, value]) => {
-      if (value && value.length > 0) {
+      if (Array.isArray(value) && value.length > 0) {
         acc[key] = value;
       }
       return acc;
     },
     {},
   );
+};
 
 const parseFormData = (formData: FormData) => Object.fromEntries(formData.entries());
 
@@ -136,7 +142,7 @@ export async function createTransaction(formData: FormData): Promise<ActionResul
 
     revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidateTag("transactions");
+    revalidateTag("transactions", "max");
     return { ok: true, data: transaction };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -180,7 +186,7 @@ export async function createBudget(formData: FormData): Promise<ActionResult<{ i
 
     revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidateTag("budgets");
+    revalidateTag("budgets", "max");
     return { ok: true, data: budget };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -216,8 +222,8 @@ export async function updateCategory(formData: FormData): Promise<ActionResult<{
 
     revalidatePath("/");
     revalidatePath("/dashboard");
-    revalidateTag("categories");
-    revalidateTag("transactions");
+    revalidateTag("categories", "max");
+    revalidateTag("transactions", "max");
     return { ok: true, data: updated };
   } catch (error) {
     if (error instanceof z.ZodError) {

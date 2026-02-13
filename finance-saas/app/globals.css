@@ -15,8 +15,8 @@
   --color-elevated: #1a1f1a;
   --color-accent: #4ade80;
   --color-accent-dim: #22c55e;
-  --font-sans: var(--font-dm-sans);
-  --font-serif: var(--font-playfair-display);
+  --font-sans: "DM Sans", "Inter", system-ui, sans-serif;
+  --font-serif: "Playfair Display", Georgia, serif;
   --animate-fade-in: fadeIn 0.6s ease-out;
   --animate-fade-in-up: fadeInUp 0.6s ease-out;
   --animate-fade-in-up-delay-1: fadeInUp 0.6s ease-out 0.1s backwards;
@@ -64,7 +64,7 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-dm-sans), system-ui, sans-serif;
+  font-family: "DM Sans", "Inter", system-ui, sans-serif;
   overflow-x: hidden;
 }
 

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { plaidClient, plaidCountryCodes, plaidProducts } from "@/lib/plaid";
+import { getPlaidClient, plaidCountryCodes, plaidProducts } from "@/lib/plaid";
 
 type LinkTokenBody = {
   clientUserId?: string;
@@ -10,6 +10,7 @@ export const runtime = "nodejs";
 
 export async function POST(request: Request) {
   try {
+    const plaidClient = getPlaidClient();
     const body = (await request.json().catch(() => ({}))) as LinkTokenBody;
     const clientUserId = body.clientUserId?.trim() || crypto.randomUUID();
 

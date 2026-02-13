@@ -1,11 +1,10 @@
 import { unstable_cache } from "next/cache";
 
-import { prisma } from "@/lib/prisma";
-
 import type { TransactionTableItem } from "@/components/transactions/transaction-table";
 
 const getRecentTransactionsCached = unstable_cache(
   async (userId: string): Promise<TransactionTableItem[]> => {
+    const { prisma } = await import("@/lib/prisma");
     const transactions = await prisma.transaction.findMany({
       where: {
         userId,

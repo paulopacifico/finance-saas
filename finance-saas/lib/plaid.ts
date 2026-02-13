@@ -6,29 +6,16 @@ import {
   Products,
 } from "plaid";
 
-const plaidClientId = process.env.PLAID_CLIENT_ID;
-const plaidSecret = process.env.PLAID_SECRET;
-const plaidEnv = process.env.PLAID_ENV ?? "sandbox";
+const parsePlaidEnvironment = () => {
+  const plaidEnv = process.env.PLAID_ENV ?? "sandbox";
+  const environment = PlaidEnvironments[plaidEnv as keyof typeof PlaidEnvironments];
 
-if (!plaidClientId || !plaidSecret) {
-  throw new Error("Missing PLAID_CLIENT_ID or PLAID_SECRET");
-}
+  if (!environment) {
+    throw new Error("Invalid PLAID_ENV. Use sandbox, development, or production.");
+  }
 
-const environment = PlaidEnvironments[plaidEnv as keyof typeof PlaidEnvironments];
-
-if (!environment) {
-  throw new Error("Invalid PLAID_ENV. Use sandbox, development, or production.");
-}
-
-const configuration = new Configuration({
-  basePath: environment,
-  baseOptions: {
-    headers: {
-      "PLAID-CLIENT-ID": plaidClientId,
-      "PLAID-SECRET": plaidSecret,
-    },
-  },
-});
+  return environment;
+};
 
 const parseCountries = () => {
   const raw = process.env.PLAID_COUNTRY_CODES ?? "CA";
@@ -46,6 +33,26 @@ const parseProducts = () => {
     .filter(Boolean) as Products[];
 };
 
-export const plaidClient = new PlaidApi(configuration);
+export const getPlaidClient = () => {
+  const plaidClientId = process.env.PLAID_CLIENT_ID;
+  const plaidSecret = process.env.PLAID_SECRET;
+
+  if (!plaidClientId || !plaidSecret) {
+    throw new Error("Missing PLAID_CLIENT_ID or PLAID_SECRET");
+  }
+
+  const configuration = new Configuration({
+    basePath: parsePlaidEnvironment(),
+    baseOptions: {
+      headers: {
+        "PLAID-CLIENT-ID": plaidClientId,
+        "PLAID-SECRET": plaidSecret,
+      },
+    },
+  });
+
+  return new PlaidApi(configuration);
+};
+
 export const plaidCountryCodes = parseCountries();
 export const plaidProducts = parseProducts();

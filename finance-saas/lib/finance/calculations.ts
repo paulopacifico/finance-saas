@@ -11,7 +11,7 @@ const toNumber = (value: MoneyLike) => {
 export const roundCad = (value: MoneyLike) => Math.round(toNumber(value) * 100) / 100;
 
 export const sumCad = (values: MoneyLike[]) =>
-  roundCad(values.reduce((acc, value) => acc + toNumber(value), 0));
+  roundCad(values.reduce<number>((acc, value) => acc + toNumber(value), 0));
 
 export const netBalanceCad = (income: MoneyLike[], expense: MoneyLike[]) =>
   roundCad(sumCad(income) - sumCad(expense));
