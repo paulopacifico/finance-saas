@@ -1,0 +1,2 @@
+-- Baseline migration for environments where public schema is pre-populated.
+-- Intentionally empty: marked as applied via prisma migrate resolve.
