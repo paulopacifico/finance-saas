@@ -1,5 +1,14 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
+vi.mock("@prisma/client", () => ({
+  DsrRequestType: {
+    ACCESS: "ACCESS",
+    CORRECTION: "CORRECTION",
+    DELETION: "DELETION",
+    PORTABILITY: "PORTABILITY",
+  },
+}));
+
 import { DsrRequestType } from "@prisma/client";
 
 vi.mock("@/lib/supabase/actions", () => ({
