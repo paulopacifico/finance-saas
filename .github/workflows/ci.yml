@@ -15,50 +15,56 @@ jobs:
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
       - run: npm run lint
 
   unit:
     runs-on: ubuntu-latest
-    needs: lint
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
       - run: npm run test:unit
 
   e2e:
     runs-on: ubuntu-latest
-    needs: unit
+    needs: [lint, unit]
+    env:
+      PLAYWRIGHT_BROWSERS_PATH: ~/.cache/ms-playwright
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('package-lock.json') }}
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
 
   build:
     runs-on: ubuntu-latest
-    needs: e2e
+    needs: [lint, unit]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
       - run: npm run build
 
   migrate-preview:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, e2e]
     environment: preview
     env:
       DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
@@ -71,18 +77,21 @@ jobs:
       - name: Validate preview migration secret
         run: |
           test -n "$DATABASE_URL" || (echo "Missing PREVIEW_DATABASE_URL secret in preview environment" && exit 1)
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
       - run: npm run prisma:migrate:deploy
       - name: Run RLS smoke validation
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql
+          docker run --rm \
+            -e DATABASE_URL="$DATABASE_URL" \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            postgres:16-alpine \
+            sh -lc 'psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql'
 
   migrate-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
-    needs: build
+    needs: [build, e2e]
     environment: production
     env:
       DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
@@ -95,10 +104,13 @@ jobs:
       - name: Validate production migration secret
         run: |
           test -n "$DATABASE_URL" || (echo "Missing PRODUCTION_DATABASE_URL secret in production environment" && exit 1)
-      - run: npm ci
+      - run: npm ci --prefer-offline --no-audit
       - run: npm run prisma:migrate:deploy
       - name: Run RLS smoke validation
         run: |
-          sudo apt-get update
-          sudo apt-get install -y postgresql-client
-          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql
+          docker run --rm \
+            -e DATABASE_URL="$DATABASE_URL" \
+            -v "$PWD":/workspace \
+            -w /workspace \
+            postgres:16-alpine \
+            sh -lc 'psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql'

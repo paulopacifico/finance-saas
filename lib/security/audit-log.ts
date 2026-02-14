@@ -28,3 +28,15 @@ export async function createAuditLog(input: AuditLogInput) {
     console.error("audit log write failed", error);
   }
 }
+
+export function shouldSampleEvent(sampleRate: number): boolean {
+  if (sampleRate <= 0) {
+    return false;
+  }
+
+  if (sampleRate >= 1) {
+    return true;
+  }
+
+  return Math.random() < sampleRate;
+}
