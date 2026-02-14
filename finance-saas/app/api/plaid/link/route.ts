@@ -1,22 +1,47 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getPlaidClient, plaidCountryCodes, plaidProducts } from "@/lib/plaid";
-
-type LinkTokenBody = {
-  clientUserId?: string;
-};
+import { consumePlaidLinkRateLimit } from "@/lib/security/rate-limit";
+import { createSupabaseActionClient } from "@/lib/supabase/actions";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Request) {
+export async function POST() {
   try {
+    const supabase = await createSupabaseActionClient();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
+
+    if (authError || !user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const requestHeaders = await headers();
+    const forwardedFor = requestHeaders.get("x-forwarded-for");
+    const clientIp = forwardedFor?.split(",")[0]?.trim() || "unknown";
+    const rateLimitKey = `plaid-link:${user.id}:${clientIp}`;
+    const rateLimit = consumePlaidLinkRateLimit(rateLimitKey);
+
+    if (!rateLimit.allowed) {
+      return NextResponse.json(
+        { error: "Rate limit exceeded" },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": String(rateLimit.retryAfterSeconds),
+          },
+        },
+      );
+    }
+
     const plaidClient = getPlaidClient();
-    const body = (await request.json().catch(() => ({}))) as LinkTokenBody;
-    const clientUserId = body.clientUserId?.trim() || crypto.randomUUID();
 
     const response = await plaidClient.linkTokenCreate({
       user: {
-        client_user_id: clientUserId,
+        client_user_id: user.id,
       },
       client_name: "Finance SaaS",
       language: "en",
@@ -29,8 +54,8 @@ export async function POST(request: Request) {
       link_token: response.data.link_token,
       expiration: response.data.expiration,
     });
-  } catch (error) {
-    console.error("plaid link token error", error);
+  } catch {
+    console.error("plaid link token error");
     return NextResponse.json(
       { error: "Unable to create Plaid link token" },
       { status: 500 },
