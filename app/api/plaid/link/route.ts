@@ -2,6 +2,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getPlaidClient, plaidCountryCodes, plaidProducts } from "@/lib/plaid";
+import { createAuditLog } from "@/lib/security/audit-log";
 import { consumePlaidLinkRateLimit } from "@/lib/security/rate-limit";
 import { createSupabaseActionClient } from "@/lib/supabase/actions";
 
@@ -48,6 +49,14 @@ export async function POST() {
       country_codes: plaidCountryCodes,
       products: plaidProducts,
       redirect_uri: process.env.PLAID_REDIRECT_URI || undefined,
+    });
+
+    await createAuditLog({
+      actorUserId: user.id,
+      targetUserId: user.id,
+      action: "PLAID_LINK_TOKEN_CREATE",
+      resource: "plaid",
+      ipAddress: clientIp,
     });
 
     return NextResponse.json({

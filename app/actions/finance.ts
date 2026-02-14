@@ -10,6 +10,7 @@ import { revalidatePath, revalidateTag } from "next/cache";
 import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
+import { createAuditLog } from "@/lib/security/audit-log";
 import { createSupabaseActionClient } from "@/lib/supabase/actions";
 
 type ActionResult<T> =
@@ -143,6 +144,13 @@ export async function createTransaction(formData: FormData): Promise<ActionResul
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "TRANSACTION_CREATE",
+      resource: "transactions",
+      metadata: { transactionId: transaction.id },
+    });
     return { ok: true, data: transaction };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -187,6 +195,13 @@ export async function createBudget(formData: FormData): Promise<ActionResult<{ i
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidateTag("budgets", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "BUDGET_CREATE",
+      resource: "budgets",
+      metadata: { budgetId: budget.id },
+    });
     return { ok: true, data: budget };
   } catch (error) {
     if (error instanceof z.ZodError) {
@@ -222,6 +237,13 @@ export async function updateCategory(formData: FormData): Promise<ActionResult<{
     revalidatePath("/dashboard");
     revalidateTag("categories", "max");
     revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "CATEGORY_UPDATE",
+      resource: "categories",
+      metadata: { categoryId: payload.categoryId },
+    });
     return { ok: true, data: { id: payload.categoryId } };
   } catch (error) {
     if (error instanceof z.ZodError) {

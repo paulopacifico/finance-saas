@@ -1,5 +1,6 @@
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { getDashboardTransactions } from "@/lib/data/finance";
+import { createAuditLog } from "@/lib/security/audit-log";
 import { createSupabaseActionClient } from "@/lib/supabase/actions";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +35,13 @@ export default async function DashboardPage() {
   }
 
   const transactions = await getDashboardTransactions(effectiveUserId);
+  await createAuditLog({
+    actorUserId: effectiveUserId,
+    targetUserId: effectiveUserId,
+    action: "DASHBOARD_VIEW",
+    resource: "transactions",
+    metadata: { source: "dashboard-page" },
+  });
 
   return (
     <div className="min-h-screen bg-zinc-50 px-4 py-10 sm:px-6 lg:px-10">

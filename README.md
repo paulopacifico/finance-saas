@@ -183,6 +183,10 @@ This repository implements core technical controls, but production readiness req
 - audit trail for sensitive data access
 - legal review for applicable Canadian privacy obligations
 
+Compliance references and checklist:
+- `docs/compliance/canada-compliance-checklist.md`
+- `docs/operations/deploy-runbook.md`
+
 ## Project Structure
 ```text
 app/

@@ -12,8 +12,14 @@ export function MarketingFooter() {
           <Link href="/features" className="hover:text-zinc-900">
             Features
           </Link>
-          <Link href="/about" className="hover:text-zinc-900">
-            About
+          <Link href="/privacy" className="hover:text-zinc-900">
+            Privacy
+          </Link>
+          <Link href="/terms" className="hover:text-zinc-900">
+            Terms
+          </Link>
+          <Link href="/data-retention" className="hover:text-zinc-900">
+            Data Retention
           </Link>
         </div>
       </div>
