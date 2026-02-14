@@ -201,30 +201,28 @@ export async function updateCategory(formData: FormData): Promise<ActionResult<{
     const payload = updateCategorySchema.parse(parseFormData(formData));
     const userId = await requireAuthenticatedUserId();
 
-    const category = await prisma.category.findFirst({
-      where: { id: payload.categoryId, userId, deletedAt: null },
-      select: { id: true },
-    });
-
-    if (!category) {
-      return { ok: false, error: "Category not found for this user" };
-    }
-
-    const updated = await prisma.category.update({
-      where: { id: payload.categoryId },
+    const updated = await prisma.category.updateMany({
+      where: {
+        id: payload.categoryId,
+        userId,
+        deletedAt: null,
+      },
       data: {
         ...(payload.name !== undefined ? { name: payload.name } : {}),
         ...(payload.type !== undefined ? { type: payload.type } : {}),
         ...(payload.isSystem !== undefined ? { isSystem: payload.isSystem } : {}),
       },
-      select: { id: true },
     });
+
+    if (updated.count === 0) {
+      return { ok: false, error: "Category not found for this user" };
+    }
 
     revalidatePath("/");
     revalidatePath("/dashboard");
     revalidateTag("categories", "max");
     revalidateTag("transactions", "max");
-    return { ok: true, data: updated };
+    return { ok: true, data: { id: payload.categoryId } };
   } catch (error) {
     if (error instanceof z.ZodError) {
       return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
