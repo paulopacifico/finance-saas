@@ -1,36 +1,192 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Finance SaaS
 
-## Getting Started
+Finance SaaS is a micro SaaS for personal finance management in Canada (CAD-first), built with a privacy-first, multi-tenant architecture.
 
-First, run the development server:
+## Tech Stack
+- Next.js (App Router)
+- TypeScript
+- Tailwind CSS
+- Prisma ORM
+- PostgreSQL (Supabase)
+- Supabase Auth
+- Plaid
+- Vitest + Playwright
+- Vercel
+
+## Product Scope
+Current MVP includes:
+- user authentication
+- transaction CRUD foundations
+- accounts, categories, and budgets domain modeling
+- dashboard with filtering and pagination
+- Plaid link token endpoint
+
+## Architecture
+### Application Layers
+- `app/`: routes, server components, server actions, API handlers
+- `components/`: domain UI components (`marketing`, `transactions`, `ui`)
+- `lib/`: integrations (`supabase`, `prisma`, `plaid`), security and data modules
+- `prisma/`: schema and SQL migrations
+- `tests/`: unit and end-to-end tests
+
+### Data Design
+- tenant isolation by `userId`
+- monetary fields as `Decimal(14,2)`
+- soft-delete via `deletedAt`
+- indexed read paths for user/time-based queries
+- RLS-enabled tenant tables in Supabase
+
+## Security Model
+- Tenant-scoped queries at application level (`where: { userId: ... }`)
+- Supabase RLS policies for tenant tables
+- Plaid endpoint requires authenticated user context
+- Plaid endpoint rate-limited (`429` + `Retry-After`)
+- `service_role` restricted to administrative/maintenance contexts
+
+Key references:
+- `docs/security/data-access-policy.md`
+- `prisma/validation/rls_smoke.sql`
+- `app/api/plaid/link/route.ts`
+
+## Environment Variables
+Create `.env` from `.env.example`:
+
+```bash
+cp .env.example .env
+```
+
+Core variables:
+- `DATABASE_URL`
+- `DIRECT_URL`
+- `NEXT_PUBLIC_SUPABASE_URL`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `SUPABASE_SERVICE_ROLE_KEY`
+- `PLAID_CLIENT_ID`
+- `PLAID_SECRET`
+- `PLAID_ENV`
+- `PLAID_COUNTRY_CODES`
+- `PLAID_PRODUCTS`
+- `PLAID_REDIRECT_URI`
+- `NEXT_PUBLIC_SITE_URL`
+
+## Local Development
+Install dependencies:
+
+```bash
+npm ci
+```
+
+Start development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Production build and run:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run start
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Database and Migrations
+Generate Prisma client:
 
-## Learn More
+```bash
+npm run prisma:generate
+```
 
-To learn more about Next.js, take a look at the following resources:
+Create migration in development:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run prisma:migrate:dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Apply migrations in deploy environments:
 
-## Deploy on Vercel
+```bash
+npm run prisma:migrate:deploy
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Validation and Tests
+Lint:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm run lint
+```
+
+Unit tests:
+
+```bash
+npm run test:unit
+```
+
+E2E tests:
+
+```bash
+npm run test:e2e
+```
+
+All tests:
+
+```bash
+npm run test
+```
+
+## CI
+Workflow: `.github/workflows/ci.yml`
+
+Pipeline order:
+1. `lint`
+2. `test:unit`
+3. `test:e2e`
+4. `build`
+
+Recommended repository protection:
+- require passing `CI` status checks on `main`
+- block merge on failing checks
+- block production promotion on failing checks
+
+## RLS Smoke Test
+Script: `prisma/validation/rls_smoke.sql`
+
+Validates row isolation across:
+- `categories`
+- `transactions`
+- `accounts`
+- `budgets`
+
+Example execution:
+
+```bash
+psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql
+```
+
+## Deployment (Vercel)
+Minimum release checklist:
+1. configure production environment variables
+2. run `prisma migrate deploy`
+3. run RLS smoke validation
+4. run CI checks (`lint`, `unit`, `e2e`, `build`)
+5. promote release
+
+## Compliance Notes (Canada)
+This repository implements core technical controls, but production readiness requires additional operational controls:
+- published Privacy Policy and Terms
+- DSR process (access, correction, deletion)
+- data retention policy and disposal process
+- audit trail for sensitive data access
+- legal review for applicable Canadian privacy obligations
+
+## Project Structure
+```text
+app/
+components/
+lib/
+prisma/
+tests/
+public/
+```
+
+## License
+Private use. Define an explicit license before public distribution.
