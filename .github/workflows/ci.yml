@@ -2,9 +2,9 @@ name: CI
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   lint:
@@ -54,3 +54,51 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npm run build
+
+  migrate-preview:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+    environment: preview
+    env:
+      DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Validate preview migration secret
+        run: |
+          test -n "$DATABASE_URL" || (echo "Missing PREVIEW_DATABASE_URL secret in preview environment" && exit 1)
+      - run: npm ci
+      - run: npm run prisma:migrate:deploy
+      - name: Run RLS smoke validation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql
+
+  migrate-production:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: build
+    environment: production
+    env:
+      DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - name: Validate production migration secret
+        run: |
+          test -n "$DATABASE_URL" || (echo "Missing PRODUCTION_DATABASE_URL secret in production environment" && exit 1)
+      - run: npm ci
+      - run: npm run prisma:migrate:deploy
+      - name: Run RLS smoke validation
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y postgresql-client
+          psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql

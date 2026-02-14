@@ -146,6 +146,7 @@ Recommended repository protection:
 - require passing `CI` status checks on `main`
 - block merge on failing checks
 - block production promotion on failing checks
+- configure separate GitHub Environments (`preview`, `production`) with isolated DB secrets
 
 ## RLS Smoke Test
 Script: `prisma/validation/rls_smoke.sql`
@@ -169,6 +170,10 @@ Minimum release checklist:
 3. run RLS smoke validation
 4. run CI checks (`lint`, `unit`, `e2e`, `build`)
 5. promote release
+
+Operational runbook:
+- `docs/operations/deploy-runbook.md`
+- includes rollback, Supabase PITR backup/restore workflow, and incident checklist
 
 ## Compliance Notes (Canada)
 This repository implements core technical controls, but production readiness requires additional operational controls:
