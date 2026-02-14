@@ -1,6 +1,7 @@
 import { unstable_cache } from "next/cache";
 
 import type { TransactionTableItem } from "@/components/transactions/transaction-table";
+import { assertNoE2EBypassInProduction } from "@/lib/security/production-guard";
 
 const E2E_USER_ID = process.env.E2E_USER_ID ?? "e2e-user";
 const E2E_USE_MOCK_DATA = process.env.E2E_USE_MOCK_DATA === "true";
@@ -144,5 +145,6 @@ const getRecentTransactionsCached = unstable_cache(
 );
 
 export async function getDashboardTransactions(userId: string) {
+  assertNoE2EBypassInProduction();
   return getRecentTransactionsCached(userId);
 }

@@ -24,7 +24,7 @@ export async function POST() {
     const forwardedFor = requestHeaders.get("x-forwarded-for");
     const clientIp = forwardedFor?.split(",")[0]?.trim() || "unknown";
     const rateLimitKey = `plaid-link:${user.id}:${clientIp}`;
-    const rateLimit = consumePlaidLinkRateLimit(rateLimitKey);
+    const rateLimit = await consumePlaidLinkRateLimit(rateLimitKey);
 
     if (!rateLimit.allowed) {
       return NextResponse.json(

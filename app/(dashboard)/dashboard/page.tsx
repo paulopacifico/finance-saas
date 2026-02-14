@@ -1,11 +1,13 @@
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { getDashboardTransactions } from "@/lib/data/finance";
 import { createAuditLog } from "@/lib/security/audit-log";
+import { assertNoE2EBypassInProduction } from "@/lib/security/production-guard";
 import { createSupabaseActionClient } from "@/lib/supabase/actions";
 
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
+  assertNoE2EBypassInProduction();
   const e2eBypassAuth = process.env.E2E_BYPASS_AUTH === "true";
   const e2eUserId = process.env.E2E_USER_ID ?? "e2e-user";
 
