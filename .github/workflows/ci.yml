@@ -68,7 +68,7 @@ jobs:
     needs: [build, e2e]
     environment: preview
     env:
-      DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.PREVIEW_DIRECT_URL }}
       PREVIEW_BASE_URL: ${{ secrets.PREVIEW_BASE_URL }}
       PREVIEW_AUTH_COOKIE_NAME: ${{ secrets.PREVIEW_AUTH_COOKIE_NAME }}
       PREVIEW_AUTH_COOKIE_VALUE: ${{ secrets.PREVIEW_AUTH_COOKIE_VALUE }}
@@ -80,7 +80,7 @@ jobs:
           cache: npm
       - name: Validate preview migration secret
         run: |
-          test -n "$DATABASE_URL" || (echo "Missing PREVIEW_DATABASE_URL secret in preview environment" && exit 1)
+          test -n "$DATABASE_URL" || (echo "Missing PREVIEW_DIRECT_URL secret in preview environment" && exit 1)
           test -n "$PREVIEW_BASE_URL" || (echo "Missing PREVIEW_BASE_URL secret in preview environment" && exit 1)
           test -n "$PREVIEW_AUTH_COOKIE_NAME" || (echo "Missing PREVIEW_AUTH_COOKIE_NAME secret in preview environment" && exit 1)
           test -n "$PREVIEW_AUTH_COOKIE_VALUE" || (echo "Missing PREVIEW_AUTH_COOKIE_VALUE secret in preview environment" && exit 1)
@@ -104,7 +104,7 @@ jobs:
     needs: [build, e2e]
     environment: production
     env:
-      DATABASE_URL: ${{ secrets.PRODUCTION_DATABASE_URL }}
+      DATABASE_URL: ${{ secrets.PRODUCTION_DIRECT_URL }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -113,7 +113,7 @@ jobs:
           cache: npm
       - name: Validate production migration secret
         run: |
-          test -n "$DATABASE_URL" || (echo "Missing PRODUCTION_DATABASE_URL secret in production environment" && exit 1)
+          test -n "$DATABASE_URL" || (echo "Missing PRODUCTION_DIRECT_URL secret in production environment" && exit 1)
       - run: npm ci --prefer-offline --no-audit
       - run: npm run prisma:migrate:deploy
       - name: Run RLS smoke validation

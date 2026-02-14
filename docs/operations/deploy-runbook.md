@@ -11,8 +11,8 @@ Use separate environments and secrets:
 - Vercel Production Environment
 
 Required GitHub secrets:
-- `PREVIEW_DATABASE_URL`
-- `PRODUCTION_DATABASE_URL`
+- `PREVIEW_DIRECT_URL`
+- `PRODUCTION_DIRECT_URL`
 
 Required Vercel environment variables:
 - `DATABASE_URL`
