@@ -1,7 +1,7 @@
 import { expect, test } from "@playwright/test";
 
 test("filters transactions by category and paginates", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/dashboard");
 
   await expect(page.getByText("Finance Dashboard")).toBeVisible();
   await expect(page.getByText("Página 1 de 2")).toBeVisible();

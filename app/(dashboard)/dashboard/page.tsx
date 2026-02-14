@@ -5,12 +5,22 @@ import { createSupabaseActionClient } from "@/lib/supabase/actions";
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {
-  const supabase = await createSupabaseActionClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const e2eBypassAuth = process.env.E2E_BYPASS_AUTH === "true";
+  const e2eUserId = process.env.E2E_USER_ID ?? "e2e-user";
 
-  if (!user) {
+  let effectiveUserId: string | null = null;
+
+  if (e2eBypassAuth) {
+    effectiveUserId = e2eUserId;
+  } else {
+    const supabase = await createSupabaseActionClient();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    effectiveUserId = user?.id ?? null;
+  }
+
+  if (!effectiveUserId) {
     return (
       <div className="min-h-screen bg-zinc-50 px-4 py-10 sm:px-6 lg:px-10">
         <main className="mx-auto w-full max-w-3xl rounded-xl border border-zinc-200 bg-white p-8">
@@ -23,7 +33,7 @@ export default async function DashboardPage() {
     );
   }
 
-  const transactions = await getDashboardTransactions(user.id);
+  const transactions = await getDashboardTransactions(effectiveUserId);
 
   return (
     <div className="min-h-screen bg-zinc-50 px-4 py-10 sm:px-6 lg:px-10">
