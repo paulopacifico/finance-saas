@@ -68,6 +68,9 @@ jobs:
     environment: preview
     env:
       DATABASE_URL: ${{ secrets.PREVIEW_DATABASE_URL }}
+      PREVIEW_BASE_URL: ${{ secrets.PREVIEW_BASE_URL }}
+      PREVIEW_AUTH_COOKIE_NAME: ${{ secrets.PREVIEW_AUTH_COOKIE_NAME }}
+      PREVIEW_AUTH_COOKIE_VALUE: ${{ secrets.PREVIEW_AUTH_COOKIE_VALUE }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -77,6 +80,9 @@ jobs:
       - name: Validate preview migration secret
         run: |
           test -n "$DATABASE_URL" || (echo "Missing PREVIEW_DATABASE_URL secret in preview environment" && exit 1)
+          test -n "$PREVIEW_BASE_URL" || (echo "Missing PREVIEW_BASE_URL secret in preview environment" && exit 1)
+          test -n "$PREVIEW_AUTH_COOKIE_NAME" || (echo "Missing PREVIEW_AUTH_COOKIE_NAME secret in preview environment" && exit 1)
+          test -n "$PREVIEW_AUTH_COOKIE_VALUE" || (echo "Missing PREVIEW_AUTH_COOKIE_VALUE secret in preview environment" && exit 1)
       - run: npm ci --prefer-offline --no-audit
       - run: npm run prisma:migrate:deploy
       - name: Run RLS smoke validation
@@ -87,6 +93,9 @@ jobs:
             -w /workspace \
             postgres:16-alpine \
             sh -lc 'psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql'
+      - run: npx playwright install --with-deps chromium
+      - name: Run preview authenticated smoke test
+        run: npm run test:e2e:preview
 
   migrate-production:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'

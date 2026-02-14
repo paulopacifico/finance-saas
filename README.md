@@ -127,6 +127,15 @@ E2E tests:
 npm run test:e2e
 ```
 
+Preview authenticated smoke:
+
+```bash
+PREVIEW_BASE_URL="https://your-preview-url" \
+PREVIEW_AUTH_COOKIE_NAME="sb-your-project-ref-auth-token" \
+PREVIEW_AUTH_COOKIE_VALUE="your-auth-cookie-value" \
+npm run test:e2e:preview
+```
+
 All tests:
 
 ```bash
@@ -136,11 +145,11 @@ npm run test
 ## CI
 Workflow: `.github/workflows/ci.yml`
 
-Pipeline order:
-1. `lint`
-2. `test:unit`
-3. `test:e2e`
-4. `build`
+Pipeline gates:
+1. `lint` + `test:unit` (parallel)
+2. `build` + `test:e2e`
+3. preview/prod migration deploy + RLS smoke
+4. preview authenticated smoke (`test:e2e:preview`)
 
 Recommended repository protection:
 - require passing `CI` status checks on `main`
