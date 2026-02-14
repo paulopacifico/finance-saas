@@ -59,6 +59,7 @@ jobs:
           node-version: 20
           cache: npm
       - run: npm ci --prefer-offline --no-audit
+      - run: npm run prisma:generate
       - run: npm run build
 
   migrate-preview:
