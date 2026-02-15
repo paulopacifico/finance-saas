@@ -9,43 +9,32 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        income: { DEFAULT: "#10b981", dark: "#059669" },
-        expense: { DEFAULT: "#ef4444", dark: "#dc2626" },
-        brand: {
-          50: "#ecfdf5",
-          100: "#d1fae5",
-          500: "#10b981",
-          600: "#059669",
-          700: "#047857",
+        bg: {
+          primary: "#0a0d0a",
+          secondary: "#0d110d",
+          card: "#111611",
+          "card-hover": "#151a15",
+          elevated: "#1a1f1a",
         },
-        accent: "#f59e0b",
+        accent: {
+          DEFAULT: "#4ade80",
+          dim: "#22c55e",
+          glow: "rgba(74, 222, 128, 0.12)",
+          "glow-strong": "rgba(74, 222, 128, 0.25)",
+        },
+        text: {
+          primary: "#f4f4f5",
+          secondary: "#a1a1aa",
+          muted: "#71717a",
+        },
       },
       fontFamily: {
-        sans: ["Inter", "system-ui", "sans-serif"],
-        display: ["Poppins", "sans-serif"],
+        sans: ["var(--font-dm-sans)", "sans-serif"],
+        serif: ["var(--font-playfair)", "serif"],
       },
-      animation: {
-        "fade-in": "fadeIn 0.5s ease-in",
-        "slide-up": "slideUp 0.6s ease-out",
-        float: "float 3s ease-in-out infinite",
-      },
-      keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { transform: "translateY(20px)", opacity: "0" },
-          "100%": { transform: "translateY(0)", opacity: "1" },
-        },
-        float: {
-          "0%, 100%": { transform: "translateY(0px)" },
-          "50%": { transform: "translateY(-10px)" },
-        },
-      },
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "hero-pattern": "url('/landing/images/hero-bg.webp')",
+      boxShadow: {
+        glow: "0 0 60px var(--accent-glow)",
+        "glow-strong": "0 0 100px var(--accent-glow-strong)",
       },
     },
   },

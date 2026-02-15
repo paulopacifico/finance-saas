@@ -24,8 +24,8 @@
       --border-hover: rgba(74, 222, 128, 0.2);
       
       /* Typography */
-      --font-sans: 'DM Sans', -apple-system, sans-serif;
-      --font-serif: 'Playfair Display', Georgia, serif;
+      --font-sans: var(--font-dm-sans), -apple-system, sans-serif;
+      --font-serif: var(--font-playfair), Georgia, serif;
       
       /* Spacing */
       --section-padding: clamp(5rem, 12vw, 9rem);
@@ -68,6 +68,7 @@
       right: 0;
       z-index: 100;
       padding: 1rem 0;
+      backdrop-filter: blur(8px);
     }
 
     .nav-container {
