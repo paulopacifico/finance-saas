@@ -3,18 +3,18 @@ import Image from "next/image";
 const features = [
   {
     icon: "/landing/icons/feature1.webp",
-    title: "Acompanhamento em tempo real",
-    description: "Monitore transacoes com atualizacao imediata e alertas relevantes.",
+    title: "Real-time tracking",
+    description: "Monitor transactions with immediate updates and relevant alerts.",
   },
   {
     icon: "/landing/icons/feature2.webp",
-    title: "Orcamento inteligente",
-    description: "Receba sugestoes de ajuste com base no seu padrao de gastos.",
+    title: "Smart budgeting",
+    description: "Receive adjustment suggestions based on your spending patterns.",
   },
   {
     icon: "/landing/icons/feature3.webp",
-    title: "Integracao bancaria",
-    description: "Centralize suas contas em uma unica plataforma segura.",
+    title: "Bank integration",
+    description: "Centralize your accounts in one secure platform.",
   },
 ];
 
@@ -23,7 +23,7 @@ export function Features() {
     <section className="rounded-2xl bg-zinc-50 px-4 py-20 sm:px-6 lg:px-10">
       <div className="mx-auto w-full max-w-6xl">
         <h2 className="text-gradient mb-12 text-center text-4xl font-bold text-zinc-900">
-          Recursos essenciais
+          Essential Features
         </h2>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

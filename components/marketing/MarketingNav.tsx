@@ -11,13 +11,13 @@ export function MarketingNav() {
 
           <div className="hidden items-center gap-8 md:flex">
             <Link href="/#features" className="text-gray-600 hover:text-gray-900">
-              Recursos
+              Features
             </Link>
             <Link href="/pricing" className="text-gray-600 hover:text-gray-900">
-              Planos
+              Pricing
             </Link>
             <Link href="/about" className="text-gray-600 hover:text-gray-900">
-              Sobre
+              About
             </Link>
           </div>
 
@@ -26,13 +26,13 @@ export function MarketingNav() {
               href="/login"
               className="rounded-md px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
-              Entrar
+              Login
             </Link>
             <Link
               href="/signup"
               className="rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
             >
-              Criar conta gratis
+              Create Free Account
             </Link>
           </div>
         </div>
@@ -47,23 +47,23 @@ export function MarketingNav() {
           <div className="py-2">
             <div className="flex flex-col gap-4">
               <Link href="/#features" className="text-gray-600">
-                Recursos
+                Features
               </Link>
               <Link href="/pricing" className="text-gray-600">
-                Planos
+                Pricing
               </Link>
               <Link href="/about" className="text-gray-600">
-                Sobre
+                About
               </Link>
               <hr />
               <Link href="/login" className="text-gray-600">
-                Entrar
+                Login
               </Link>
               <Link
                 href="/signup"
                 className="inline-flex w-fit rounded-md bg-brand-500 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-brand-600"
               >
-                Criar conta gratis
+                Create Free Account
               </Link>
             </div>
           </div>
