@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-import { TemplateFrame } from "@/components/marketing/template-frame";
+import { TailwindLanding } from "@/components/marketing/tailwind-landing";
 
 export const metadata: Metadata = {
   title: "Finflow - Smart Finance Management for Modern Teams",
@@ -9,5 +9,5 @@ export const metadata: Metadata = {
 };
 
 export default async function LandingPage() {
-  return <TemplateFrame template="tailwind" />;
+  return <TailwindLanding />;
 }
