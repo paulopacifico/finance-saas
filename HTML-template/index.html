@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finflow — Smart Finance Management for Modern Teams</title>
+  <meta name="description" content="Manage your finances easily and with confidence. Real-time analytics, smart budgeting, and automated reports.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-container">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        Finflow
+      </a>
+      <div class="nav-center">
+        <a href="#" class="nav-link active">Home</a>
+        <a href="#features" class="nav-link">Features</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#testimonials" class="nav-link">Contact</a>
+      </div>
+      <div class="nav-right">
+        <a href="#" class="btn btn-ghost">Login</a>
+        <a href="#" class="btn btn-primary">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-container">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Easy Finance Made Smarter
+        </div>
+        <h1 class="hero-title">
+          Manage your finances easily and with <span class="hero-title-italic">confidence</span>
+        </h1>
+        <p class="hero-subtitle">
+          Finflow empowers you to securely manage, smartly track, and effortlessly grow your money with powerful, all-in-one tools.
+        </p>
+        <div class="hero-cta">
+          <a href="#" class="btn btn-primary btn-lg">Get Started</a>
+          <a href="#" class="btn btn-secondary btn-lg">
+            Learn More
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      <div class="hero-visual">
+        <div class="dashboard-mockup">
+          <div class="mockup-header">
+            <span class="mockup-time">9:41</span>
+            <div class="mockup-icons">
+              <span>●●●●</span>
+              <span>📶</span>
+              <span>🔋</span>
+            </div>
+          </div>
+          <div class="mockup-welcome">
+            <p class="mockup-welcome-text">Welcome</p>
+            <div class="mockup-balance-row">
+              <div class="balance-card income">
+                <div class="balance-label">Income</div>
+                <div class="balance-value">$22,760.23</div>
+              </div>
+              <div class="balance-card">
+                <div class="balance-label">Expense</div>
+                <div class="balance-value">$12,760.23</div>
+              </div>
+            </div>
+          </div>
+          <div class="mockup-chart">
+            <div class="chart-header">
+              <div>
+                <div class="chart-value">$30,113.80</div>
+                <div class="chart-change">+2.76%</div>
+              </div>
+              <span class="chart-more">More</span>
+            </div>
+            <div class="chart-graph">
+              <div class="chart-line">
+                <svg viewBox="0 0 400 120" preserveAspectRatio="none">
+                  <defs>
+                    <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" style="stop-color:#4ade80;stop-opacity:0.3"/>
+                      <stop offset="100%" style="stop-color:#4ade80;stop-opacity:0"/>
+                    </linearGradient>
+                  </defs>
+                  <path d="M0 100 Q50 80 100 70 T200 50 T300 60 T400 30 L400 120 L0 120 Z" fill="url(#chartGradient)"/>
+                  <path d="M0 100 Q50 80 100 70 T200 50 T300 60 T400 30" stroke="#4ade80" stroke-width="2" fill="none"/>
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mockup-sidebar">
+          <div class="sidebar-item">
+            <span class="sidebar-label">ol/USD</span>
+            <div>
+              <div class="sidebar-value">8.87</div>
+              <div class="sidebar-change">+3.75%</div>
+            </div>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-label">Bitcoin</span>
+            <div>
+              <div class="sidebar-value">$1,270.10</div>
+              <div class="sidebar-change">+1.24%</div>
+            </div>
+          </div>
+          <div class="sidebar-item">
+            <span class="sidebar-label">ATOM/US</span>
+            <div>
+              <div class="sidebar-value">$68.05</div>
+              <div class="sidebar-change">+2.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos Section -->
+  <section class="logos">
+    <div class="logos-container">
+      <p class="logos-title">Trusted by the leaders</p>
+      <div class="logos-grid">
+        <div class="logo-item">BeReal.</div>
+        <div class="logo-item">☁️ SOUNDCLOUD</div>
+        <div class="logo-item">flickr</div>
+        <div class="logo-item">●● Medium</div>
+        <div class="logo-item">🏷️ TAGGED</div>
+        <div class="logo-item">Pinterest</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features" id="features">
+    <div class="features-container">
+      <div class="section-header">
+        <h2 class="section-title">Streamline finances with smart <span class="section-title-italic">features</span></h2>
+        <p class="section-subtitle">Everything you need to take control of your money, all in one place.</p>
+      </div>
+      <div class="bento-grid">
+        <!-- Real-Time Analytics -->
+        <div class="bento-card analytics-card">
+          <div>
+            <h3 class="bento-title">Real-Time Analytics</h3>
+            <p class="bento-description">Monitor your finances live with clear, intuitive dashboards.</p>
+          </div>
+          <div class="analytics-visual">
+            <div class="analytics-amount">
+              <span class="analytics-value">$8900.70</span>
+              <span class="analytics-badge">
+                <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                12%
+              </span>
+            </div>
+            <div class="analytics-bars">
+              <div class="analytics-bar" style="height: 40%"></div>
+              <div class="analytics-bar" style="height: 60%"></div>
+              <div class="analytics-bar" style="height: 45%"></div>
+              <div class="analytics-bar active" style="height: 80%"></div>
+              <div class="analytics-bar" style="height: 55%"></div>
+              <div class="analytics-bar active" style="height: 90%"></div>
+              <div class="analytics-bar" style="height: 70%"></div>
+              <div class="analytics-bar active" style="height: 95%"></div>
+              <div class="analytics-bar" style="height: 50%"></div>
+              <div class="analytics-bar" style="height: 65%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automated Reports -->
+        <div class="bento-card reports-card">
+          <div class="reports-visual">
+            <div class="reports-icon">
+              <div class="reports-bars">
+                <div class="reports-bar" style="width: 60px"></div>
+                <div class="reports-bar" style="width: 45px"></div>
+                <div class="reports-bar" style="width: 70px"></div>
+              </div>
+            </div>
+          </div>
+          <h3 class="bento-title">Automated Reports</h3>
+          <p class="bento-description">Generate summaries instantly—no manual work needed</p>
+        </div>
+
+        <!-- Smart Budgeting -->
+        <div class="bento-card budgeting-card">
+          <div>
+            <h3 class="bento-title">Smart Budgeting</h3>
+            <p class="bento-description">Plan and adjust with AI-powered budget suggestions.</p>
+          </div>
+          <div class="budgeting-visual">
+            <div class="donut-chart">
+              <svg viewBox="0 0 160 160">
+                <circle class="donut-bg" cx="80" cy="80" r="60"/>
+                <circle class="donut-segment" cx="80" cy="80" r="60" 
+                  stroke="#4ade80" 
+                  stroke-dasharray="377" 
+                  stroke-dashoffset="94"/>
+                <circle class="donut-segment" cx="80" cy="80" r="60" 
+                  stroke="#22c55e" 
+                  stroke-dasharray="377" 
+                  stroke-dashoffset="283"
+                  style="transform: rotate(90deg); transform-origin: center;"/>
+              </svg>
+              <div class="donut-label">
+                <span class="donut-percent">5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth Score -->
+        <div class="bento-card growth-card">
+          <h3 class="bento-title">Growth Score</h3>
+          <p class="bento-description">Track your financial health with a simple score.</p>
+          <div class="growth-visual">
+            <div class="growth-gauge">
+              <svg viewBox="0 0 180 100">
+                <defs>
+                  <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#22c55e"/>
+                    <stop offset="100%" style="stop-color:#4ade80"/>
+                  </linearGradient>
+                </defs>
+                <path class="gauge-bg" d="M20 90 A 70 70 0 0 1 160 90"/>
+                <path class="gauge-fill" d="M20 90 A 70 70 0 0 1 160 90"/>
+              </svg>
+              <div class="growth-value">
+                <div class="growth-number">75</div>
+                <div class="growth-label">Growth Score</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secure Syncing -->
+        <div class="bento-card syncing-card span-2">
+          <h3 class="bento-title">Secure Syncing</h3>
+          <p class="bento-description">Monitor your finances live with dashboards. Connect all your accounts securely.</p>
+          <div class="syncing-visual">
+            <div class="sync-node">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div class="sync-line"></div>
+            <div class="sync-node">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="sync-line"></div>
+            <div class="sync-node">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="pricing">
+    <div class="pricing-container">
+      <div class="section-header">
+        <h2 class="section-title">Simple, transparent <span class="section-title-italic">pricing</span></h2>
+        <p class="section-subtitle">Choose the plan that works for you. No hidden fees.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <h3 class="pricing-name">Starter</h3>
+          <p class="pricing-description">For individuals getting started</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount">0</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="pricing-check">✓</span> 2 bank connections</li>
+            <li><span class="pricing-check">✓</span> Basic analytics</li>
+            <li><span class="pricing-check">✓</span> Monthly reports</li>
+            <li><span class="pricing-check">✓</span> Mobile app access</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Get Started Free</a>
+        </div>
+        <div class="pricing-card featured">
+          <h3 class="pricing-name">Pro</h3>
+          <p class="pricing-description">For growing businesses</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount">19</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="pricing-check">✓</span> Unlimited connections</li>
+            <li><span class="pricing-check">✓</span> Advanced analytics</li>
+            <li><span class="pricing-check">✓</span> Real-time reports</li>
+            <li><span class="pricing-check">✓</span> AI budget suggestions</li>
+            <li><span class="pricing-check">✓</span> Priority support</li>
+          </ul>
+          <a href="#" class="btn btn-primary">Get Started</a>
+        </div>
+        <div class="pricing-card">
+          <h3 class="pricing-name">Enterprise</h3>
+          <p class="pricing-description">For large organizations</p>
+          <div class="pricing-price">
+            <span class="pricing-currency">$</span>
+            <span class="pricing-amount">49</span>
+            <span class="pricing-period">/month</span>
+          </div>
+          <ul class="pricing-features">
+            <li><span class="pricing-check">✓</span> Everything in Pro</li>
+            <li><span class="pricing-check">✓</span> Team collaboration</li>
+            <li><span class="pricing-check">✓</span> Custom integrations</li>
+            <li><span class="pricing-check">✓</span> Dedicated manager</li>
+            <li><span class="pricing-check">✓</span> SLA guarantee</li>
+          </ul>
+          <a href="#" class="btn btn-secondary">Contact Sales</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials" id="testimonials">
+    <div class="testimonials-container">
+      <div class="section-header">
+        <h2 class="section-title">Loved by thousands of <span class="section-title-italic">users</span></h2>
+        <p class="section-subtitle">See what our customers have to say about Finflow.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"Finflow completely changed how I manage my business finances. The real-time analytics are incredibly useful for making quick decisions."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SK</div>
+            <div>
+              <div class="testimonial-name">Sarah Kim</div>
+              <div class="testimonial-role">Startup Founder</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"The automated reports save me hours every month. I can focus on growing my business instead of crunching numbers."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MR</div>
+            <div>
+              <div class="testimonial-name">Marcus Rodriguez</div>
+              <div class="testimonial-role">E-commerce Owner</div>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-content">"Finally, a finance app that actually understands what small business owners need. The AI suggestions are spot-on."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">AL</div>
+            <div>
+              <div class="testimonial-name">Amy Liu</div>
+              <div class="testimonial-role">Freelance Designer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta">
+    <div class="cta-container">
+      <h2 class="cta-title">Ready to take control of your <span class="section-title-italic">finances</span>?</h2>
+      <p class="cta-subtitle">Join thousands of users who trust Finflow to manage their money smarter.</p>
+      <div class="cta-buttons">
+        <a href="#" class="btn btn-primary btn-lg">Get Started Free</a>
+        <a href="#" class="btn btn-secondary btn-lg">Schedule a Demo</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        Finflow
+      </a>
+      <div class="footer-links">
+        <a href="#" class="footer-link">Twitter</a>
+        <a href="#" class="footer-link">LinkedIn</a>
+        <a href="#" class="footer-link">Privacy</a>
+        <a href="#" class="footer-link">Terms</a>
+        <a href="#" class="footer-link">Help</a>
+      </div>
+      <p class="footer-copyright">© 2024 Finflow. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+
+    // Nav active state
+    const navLinks = document.querySelectorAll('.nav-link');
+    navLinks.forEach(link => {
+      link.addEventListener('click', function() {
+        navLinks.forEach(l => l.classList.remove('active'));
+        this.classList.add('active');
+      });
+    });
+  </script>
+</body>
+</html>
