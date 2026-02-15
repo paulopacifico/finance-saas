@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Finflow — Smart Finance Management for Modern Teams</title>
+  <meta name="description" content="Manage your finances easily and with confidence. Real-time analytics, smart budgeting, and automated reports.">
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,600&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#0a0d0a',
+            secondary: '#0d110d',
+            card: '#111611',
+            'card-hover': '#151a15',
+            elevated: '#1a1f1a',
+            accent: '#4ade80',
+            'accent-dim': '#22c55e',
+          },
+          fontFamily: {
+            sans: ['DM Sans', 'system-ui', 'sans-serif'],
+            serif: ['Playfair Display', 'Georgia', 'serif'],
+          },
+          animation: {
+            'fade-in': 'fadeIn 0.6s ease-out',
+            'fade-in-up': 'fadeInUp 0.6s ease-out',
+            'fade-in-up-delay-1': 'fadeInUp 0.6s ease-out 0.1s backwards',
+            'fade-in-up-delay-2': 'fadeInUp 0.6s ease-out 0.2s backwards',
+            'fade-in-up-delay-3': 'fadeInUp 0.6s ease-out 0.3s backwards',
+            'fade-in-delay-4': 'fadeIn 0.8s ease-out 0.4s backwards',
+            'sync-pulse': 'syncPulse 1.5s ease-in-out infinite',
+          },
+          keyframes: {
+            fadeIn: {
+              'from': { opacity: '0' },
+              'to': { opacity: '1' },
+            },
+            fadeInUp: {
+              'from': { opacity: '0', transform: 'translateY(20px)' },
+              'to': { opacity: '1', transform: 'translateY(0)' },
+            },
+            syncPulse: {
+              '0%, 100%': { left: '0' },
+              '50%': { left: 'calc(100% - 8px)' },
+            },
+          },
+        },
+      },
+    }
+  </script>
+  <style>
+    /* Custom styles that are difficult with Tailwind utilities */
+    ::selection {
+      background: #4ade80;
+      color: #0a0d0a;
+    }
+    
+    .accent-glow {
+      background: rgba(74, 222, 128, 0.12);
+    }
+    
+    .accent-glow-strong {
+      box-shadow: 0 0 60px rgba(74, 222, 128, 0.15);
+    }
+    
+    .border-accent-subtle {
+      border-color: rgba(74, 222, 128, 0.08);
+    }
+    
+    .border-accent-hover {
+      border-color: rgba(74, 222, 128, 0.2);
+    }
+    
+    .bg-white-3 {
+      background: rgba(255, 255, 255, 0.03);
+    }
+    
+    .bg-white-5 {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    
+    .bg-white-8 {
+      background: rgba(255, 255, 255, 0.08);
+    }
+    
+    .chart-gradient {
+      fill: url(#chartGradient);
+    }
+    
+    .gauge-gradient {
+      stroke: url(#gaugeGradient);
+    }
+    
+    /* Sync animation */
+    .sync-dot {
+      animation: syncPulse 1.5s ease-in-out infinite;
+    }
+    
+    @keyframes syncPulse {
+      0%, 100% { left: 0; }
+      50% { left: calc(100% - 8px); }
+    }
+  </style>
+</head>
+<body class="font-sans bg-primary text-zinc-100 leading-relaxed overflow-x-hidden">
+
+  <!-- Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 py-4">
+    <div class="max-w-[1240px] mx-auto px-[5vw] flex items-center justify-between">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 font-semibold text-xl">
+        <div class="w-7 h-7 bg-gradient-to-br from-accent to-accent-dim rounded-md flex items-center justify-center">
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        Finflow
+      </a>
+      
+      <!-- Center Nav -->
+      <div class="absolute left-1/2 -translate-x-1/2 hidden lg:flex items-center gap-1 bg-white-3 border border-accent-subtle rounded-full p-1.5">
+        <a href="#" class="px-4 py-2 text-sm rounded-full bg-white-8 text-zinc-100 transition-colors">Home</a>
+        <a href="#features" class="px-4 py-2 text-sm rounded-full text-zinc-400 hover:text-zinc-100 transition-colors">Features</a>
+        <a href="#pricing" class="px-4 py-2 text-sm rounded-full text-zinc-400 hover:text-zinc-100 transition-colors">Pricing</a>
+        <a href="#testimonials" class="px-4 py-2 text-sm rounded-full text-zinc-400 hover:text-zinc-100 transition-colors">Contact</a>
+      </div>
+      
+      <!-- Right Nav -->
+      <div class="flex items-center gap-3">
+        <a href="#" class="px-5 py-2.5 text-sm font-medium text-zinc-400 hover:text-zinc-100 transition-colors">Login</a>
+        <a href="#" class="px-5 py-2.5 text-sm font-semibold bg-accent text-primary rounded-lg hover:bg-accent-dim hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/20 transition-all">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="min-h-screen pt-32 pb-20 flex items-center">
+    <div class="max-w-[1240px] mx-auto px-[5vw] grid lg:grid-cols-[1fr_1.1fr] gap-16 items-center">
+      <!-- Hero Content -->
+      <div class="relative z-10 text-center lg:text-left">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 accent-glow border border-accent/15 rounded-full text-sm text-accent mb-7 animate-fade-in">
+          <span class="w-1.5 h-1.5 bg-accent rounded-full"></span>
+          Easy Finance Made Smarter
+        </div>
+        
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-semibold leading-[1.1] tracking-tight mb-6 animate-fade-in-up-delay-1">
+          Manage your finances easily and with <span class="font-serif italic font-normal text-accent">confidence</span>
+        </h1>
+        
+        <!-- Subtitle -->
+        <p class="text-lg text-zinc-400 max-w-[480px] leading-relaxed mb-8 mx-auto lg:mx-0 animate-fade-in-up-delay-2">
+          Finflow empowers you to securely manage, smartly track, and effortlessly grow your money with powerful, all-in-one tools.
+        </p>
+        
+        <!-- CTA Buttons -->
+        <div class="flex items-center justify-center lg:justify-start gap-4 animate-fade-in-up-delay-3">
+          <a href="#" class="px-7 py-3.5 text-[15px] font-semibold bg-accent text-primary rounded-lg hover:bg-accent-dim hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/20 transition-all">
+            Get Started
+          </a>
+          <a href="#" class="group px-7 py-3.5 text-[15px] font-medium bg-white-5 border border-accent-subtle text-zinc-100 rounded-lg hover:bg-white-8 hover:border-accent-hover transition-all flex items-center gap-1.5">
+            Learn More
+            <svg class="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+      
+      <!-- Hero Visual -->
+      <div class="relative animate-fade-in-delay-4">
+        <!-- Main Dashboard -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-4 shadow-2xl accent-glow-strong">
+          <!-- Header -->
+          <div class="flex items-center justify-between px-4 py-3 border-b border-accent-subtle mb-4">
+            <span class="text-sm font-medium">9:41</span>
+            <div class="flex items-center gap-1.5 text-xs text-zinc-400">
+              <span>●●●●</span>
+              <span>📶</span>
+              <span>🔋</span>
+            </div>
+          </div>
+          
+          <!-- Welcome Section -->
+          <div class="px-4 mb-5">
+            <p class="text-sm text-zinc-400 mb-1">Welcome</p>
+            <div class="grid grid-cols-2 gap-3">
+              <div class="bg-elevated rounded-xl p-4">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Income</div>
+                <div class="text-xl font-bold text-accent">$22,760.23</div>
+              </div>
+              <div class="bg-elevated rounded-xl p-4">
+                <div class="text-[11px] text-zinc-500 uppercase tracking-wide mb-1">Expense</div>
+                <div class="text-xl font-bold">$12,760.23</div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Chart Section -->
+          <div class="bg-elevated rounded-xl p-5 mx-4 mb-4">
+            <div class="flex items-start justify-between mb-4">
+              <div>
+                <div class="text-2xl font-bold">$30,113.80</div>
+                <div class="text-xs text-accent">+2.76%</div>
+              </div>
+              <span class="text-xs text-zinc-500">More</span>
+            </div>
+            <div class="h-[120px] relative mt-4">
+              <svg class="w-full h-full" viewBox="0 0 400 120" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="chartGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" style="stop-color:#4ade80;stop-opacity:0.3"/>
+                    <stop offset="100%" style="stop-color:#4ade80;stop-opacity:0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0 100 Q50 80 100 70 T200 50 T300 60 T400 30 L400 120 L0 120 Z" class="chart-gradient"/>
+                <path d="M0 100 Q50 80 100 70 T200 50 T300 60 T400 30" stroke="#4ade80" stroke-width="2" fill="none"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Floating Sidebar -->
+        <div class="absolute top-16 -right-8 w-40 bg-card border border-accent-subtle rounded-xl p-4 shadow-xl hidden xl:block">
+          <div class="flex items-center justify-between py-2.5 border-b border-accent-subtle">
+            <span class="text-xs text-zinc-400">ol/USD</span>
+            <div class="text-right">
+              <div class="text-sm font-semibold">8.87</div>
+              <div class="text-[11px] text-accent">+3.75%</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2.5 border-b border-accent-subtle">
+            <span class="text-xs text-zinc-400">Bitcoin</span>
+            <div class="text-right">
+              <div class="text-sm font-semibold">$1,270.10</div>
+              <div class="text-[11px] text-accent">+1.24%</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-2.5">
+            <span class="text-xs text-zinc-400">ATOM/US</span>
+            <div class="text-right">
+              <div class="text-sm font-semibold">$68.05</div>
+              <div class="text-[11px] text-accent">+2.4%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos Section -->
+  <section class="py-16 border-y border-accent-subtle">
+    <div class="max-w-[1240px] mx-auto px-[5vw]">
+      <p class="text-center text-sm text-zinc-500 mb-10">Trusted by the leaders</p>
+      <div class="flex items-center justify-between flex-wrap gap-8">
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity">BeReal.</div>
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity flex items-center gap-2">☁️ SOUNDCLOUD</div>
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity">flickr</div>
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity">●● Medium</div>
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity">🏷️ TAGGED</div>
+        <div class="text-xl font-semibold text-zinc-500 opacity-60 hover:opacity-100 transition-opacity">Pinterest</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="py-24 lg:py-32" id="features">
+    <div class="max-w-[1240px] mx-auto px-[5vw]">
+      <!-- Section Header -->
+      <div class="text-center max-w-[600px] mx-auto mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4">
+          Streamline finances with smart <span class="font-serif italic font-normal text-accent">features</span>
+        </h2>
+        <p class="text-lg text-zinc-400">Everything you need to take control of your money, all in one place.</p>
+      </div>
+      
+      <!-- Bento Grid -->
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Real-Time Analytics -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-7 hover:border-accent-hover hover:-translate-y-1 hover:shadow-2xl transition-all min-h-[320px] flex flex-col justify-between">
+          <div>
+            <h3 class="text-xl font-semibold mb-2">Real-Time Analytics</h3>
+            <p class="text-[15px] text-zinc-400 leading-relaxed">Monitor your finances live with clear, intuitive dashboards.</p>
+          </div>
+          <div class="mt-6">
+            <div class="flex items-center gap-3 mb-4">
+              <span class="text-2xl font-bold">$8900.70</span>
+              <span class="flex items-center gap-1 px-2 py-1 accent-glow rounded text-xs text-accent">
+                <svg class="w-2.5 h-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M18 15l-6-6-6 6"/>
+                </svg>
+                12%
+              </span>
+            </div>
+            <div class="flex items-end gap-2 h-[100px]">
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 40%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 60%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 45%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-100" style="height: 80%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 55%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-100" style="height: 90%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 70%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-100" style="height: 95%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 50%"></div>
+              <div class="flex-1 bg-gradient-to-t from-accent-dim to-accent rounded-t opacity-30" style="height: 65%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Automated Reports -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-7 hover:border-accent-hover hover:-translate-y-1 hover:shadow-2xl transition-all min-h-[320px] flex flex-col items-center justify-center text-center">
+          <div class="w-[140px] h-[140px] mb-6 relative">
+            <div class="w-full h-full bg-gradient-to-br from-elevated to-card border border-accent-subtle rounded-2xl flex items-center justify-center">
+              <div class="flex flex-col gap-2 items-start">
+                <div class="h-2 bg-accent rounded" style="width: 60px"></div>
+                <div class="h-2 bg-accent rounded" style="width: 45px"></div>
+                <div class="h-2 bg-accent rounded" style="width: 70px"></div>
+              </div>
+            </div>
+            <div class="absolute inset-[-1px] bg-gradient-to-br from-accent to-transparent rounded-2xl opacity-20 -z-10"></div>
+          </div>
+          <h3 class="text-xl font-semibold mb-2">Automated Reports</h3>
+          <p class="text-[15px] text-zinc-400 leading-relaxed">Generate summaries instantly—no manual work needed</p>
+        </div>
+
+        <!-- Smart Budgeting -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-7 hover:border-accent-hover hover:-translate-y-1 hover:shadow-2xl transition-all min-h-[320px] flex flex-col">
+          <div>
+            <h3 class="text-xl font-semibold mb-2">Smart Budgeting</h3>
+            <p class="text-[15px] text-zinc-400 leading-relaxed">Plan and adjust with AI-powered budget suggestions.</p>
+          </div>
+          <div class="flex-1 flex items-center justify-center mt-6">
+            <div class="w-[160px] h-[160px] relative">
+              <svg class="w-full h-full -rotate-90" viewBox="0 0 160 160">
+                <circle cx="80" cy="80" r="60" fill="none" stroke-width="20" class="stroke-elevated"/>
+                <circle cx="80" cy="80" r="60" fill="none" stroke-width="20" stroke="#4ade80" stroke-dasharray="377" stroke-dashoffset="94" stroke-linecap="round"/>
+                <circle cx="80" cy="80" r="60" fill="none" stroke-width="20" stroke="#22c55e" stroke-dasharray="377" stroke-dashoffset="283" stroke-linecap="round" style="transform: rotate(90deg); transform-origin: center;"/>
+              </svg>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <span class="text-[11px] text-zinc-500">5%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth Score -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-7 hover:border-accent-hover hover:-translate-y-1 hover:shadow-2xl transition-all min-h-[280px]">
+          <h3 class="text-xl font-semibold mb-2">Growth Score</h3>
+          <p class="text-[15px] text-zinc-400 leading-relaxed">Track your financial health with a simple score.</p>
+          <div class="flex items-center justify-center mt-8">
+            <div class="relative w-[180px] h-[100px]">
+              <svg class="w-full h-full" viewBox="0 0 180 100">
+                <defs>
+                  <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#22c55e"/>
+                    <stop offset="100%" style="stop-color:#4ade80"/>
+                  </linearGradient>
+                </defs>
+                <path d="M20 90 A 70 70 0 0 1 160 90" fill="none" stroke-width="16" stroke-linecap="round" class="stroke-elevated"/>
+                <path d="M20 90 A 70 70 0 0 1 160 90" fill="none" stroke-width="16" stroke-linecap="round" class="gauge-gradient" stroke-dasharray="251" stroke-dashoffset="63"/>
+              </svg>
+              <div class="absolute bottom-0 left-1/2 -translate-x-1/2 text-center">
+                <div class="text-4xl font-bold text-accent">75</div>
+                <div class="text-sm text-zinc-500 mt-1">Growth Score</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Secure Syncing -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-7 hover:border-accent-hover hover:-translate-y-1 hover:shadow-2xl transition-all min-h-[280px] md:col-span-2 lg:col-span-2">
+          <h3 class="text-xl font-semibold mb-2">Secure Syncing</h3>
+          <p class="text-[15px] text-zinc-400 leading-relaxed">Monitor your finances live with dashboards. Connect all your accounts securely.</p>
+          <div class="flex items-center justify-center gap-4 mt-10">
+            <div class="w-[60px] h-[60px] bg-elevated border border-accent-subtle rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+              </svg>
+            </div>
+            <div class="w-10 h-0.5 bg-gradient-to-r from-accent to-accent-dim relative">
+              <div class="absolute w-2 h-2 bg-accent rounded-full top-1/2 -translate-y-1/2 sync-dot"></div>
+            </div>
+            <div class="w-[60px] h-[60px] bg-elevated border border-accent-subtle rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+              </svg>
+            </div>
+            <div class="w-10 h-0.5 bg-gradient-to-r from-accent to-accent-dim relative">
+              <div class="absolute w-2 h-2 bg-accent rounded-full top-1/2 -translate-y-1/2 sync-dot"></div>
+            </div>
+            <div class="w-[60px] h-[60px] bg-elevated border border-accent-subtle rounded-xl flex items-center justify-center">
+              <svg class="w-6 h-6 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="py-24 lg:py-32 bg-secondary relative" id="pricing">
+    <div class="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-accent-subtle to-transparent"></div>
+    <div class="max-w-[1240px] mx-auto px-[5vw]">
+      <!-- Section Header -->
+      <div class="text-center max-w-[600px] mx-auto mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4">
+          Simple, transparent <span class="font-serif italic font-normal text-accent">pricing</span>
+        </h2>
+        <p class="text-lg text-zinc-400">Choose the plan that works for you. No hidden fees.</p>
+      </div>
+      
+      <!-- Pricing Grid -->
+      <div class="grid md:grid-cols-3 gap-6 max-w-[1000px] mx-auto">
+        <!-- Starter -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-8 transition-all hover:border-accent-hover">
+          <h3 class="text-lg font-semibold mb-1">Starter</h3>
+          <p class="text-sm text-zinc-500 mb-6">For individuals getting started</p>
+          <div class="flex items-baseline gap-1 mb-8">
+            <span class="text-xl font-semibold text-zinc-400">$</span>
+            <span class="text-5xl font-bold">0</span>
+            <span class="text-sm text-zinc-500 ml-1">/month</span>
+          </div>
+          <ul class="space-y-0 mb-8">
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              2 bank connections
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Basic analytics
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Monthly reports
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Mobile app access
+            </li>
+          </ul>
+          <a href="#" class="block w-full py-3 text-center text-[15px] font-medium bg-white-5 border border-accent-subtle rounded-lg hover:bg-white-8 hover:border-accent-hover transition-all">
+            Get Started Free
+          </a>
+        </div>
+
+        <!-- Pro (Featured) -->
+        <div class="bg-card border border-accent rounded-2xl p-8 relative accent-glow-strong">
+          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-accent text-primary text-xs font-semibold rounded-full">
+            Popular
+          </div>
+          <h3 class="text-lg font-semibold mb-1">Pro</h3>
+          <p class="text-sm text-zinc-500 mb-6">For growing businesses</p>
+          <div class="flex items-baseline gap-1 mb-8">
+            <span class="text-xl font-semibold text-zinc-400">$</span>
+            <span class="text-5xl font-bold">19</span>
+            <span class="text-sm text-zinc-500 ml-1">/month</span>
+          </div>
+          <ul class="space-y-0 mb-8">
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Unlimited connections
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Advanced analytics
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Real-time reports
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              AI budget suggestions
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Priority support
+            </li>
+          </ul>
+          <a href="#" class="block w-full py-3 text-center text-[15px] font-semibold bg-accent text-primary rounded-lg hover:bg-accent-dim transition-all">
+            Get Started
+          </a>
+        </div>
+
+        <!-- Enterprise -->
+        <div class="bg-card border border-accent-subtle rounded-2xl p-8 transition-all hover:border-accent-hover">
+          <h3 class="text-lg font-semibold mb-1">Enterprise</h3>
+          <p class="text-sm text-zinc-500 mb-6">For large organizations</p>
+          <div class="flex items-baseline gap-1 mb-8">
+            <span class="text-xl font-semibold text-zinc-400">$</span>
+            <span class="text-5xl font-bold">49</span>
+            <span class="text-sm text-zinc-500 ml-1">/month</span>
+          </div>
+          <ul class="space-y-0 mb-8">
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Everything in Pro
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Team collaboration
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Custom integrations
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400 border-b border-accent-subtle">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              Dedicated manager
+            </li>
+            <li class="flex items-center gap-3 py-3 text-[15px] text-zinc-400">
+              <span class="w-[18px] h-[18px] accent-glow rounded-full flex items-center justify-center text-accent text-[11px]">✓</span>
+              SLA guarantee
+            </li>
+          </ul>
+          <a href="#" class="block w-full py-3 text-center text-[15px] font-medium bg-white-5 border border-accent-subtle rounded-lg hover:bg-white-8 hover:border-accent-hover transition-all">
+            Contact Sales
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="py-24 lg:py-32" id="testimonials">
+    <div class="max-w-[1240px] mx-auto px-[5vw]">
+      <!-- Section Header -->
+      <div class="text-center max-w-[600px] mx-auto mb-16">
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-4">
+          Loved by thousands of <span class="font-serif italic font-normal text-accent">users</span>
+        </h2>
+        <p class="text-lg text-zinc-400">See what our customers have to say about Finflow.</p>
+      </div>
+      
+      <!-- Testimonials Grid -->
+      <div class="grid md:grid-cols-3 gap-6">
+        <div class="bg-card border border-accent-subtle rounded-2xl p-8 hover:border-accent-hover transition-all">
+          <div class="flex gap-1 text-accent mb-4">★★★★★</div>
+          <p class="text-base text-zinc-400 leading-relaxed mb-6">"Finflow completely changed how I manage my business finances. The real-time analytics are incredibly useful for making quick decisions."</p>
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent to-accent-dim flex items-center justify-center font-semibold text-[15px] text-primary">SK</div>
+            <div>
+              <div class="font-semibold text-[15px]">Sarah Kim</div>
+              <div class="text-sm text-zinc-500">Startup Founder</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-card border border-accent-subtle rounded-2xl p-8 hover:border-accent-hover transition-all">
+          <div class="flex gap-1 text-accent mb-4">★★★★★</div>
+          <p class="text-base text-zinc-400 leading-relaxed mb-6">"The automated reports save me hours every month. I can focus on growing my business instead of crunching numbers."</p>
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent to-accent-dim flex items-center justify-center font-semibold text-[15px] text-primary">MR</div>
+            <div>
+              <div class="font-semibold text-[15px]">Marcus Rodriguez</div>
+              <div class="text-sm text-zinc-500">E-commerce Owner</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-card border border-accent-subtle rounded-2xl p-8 hover:border-accent-hover transition-all">
+          <div class="flex gap-1 text-accent mb-4">★★★★★</div>
+          <p class="text-base text-zinc-400 leading-relaxed mb-6">"Finally, a finance app that actually understands what small business owners need. The AI suggestions are spot-on."</p>
+          <div class="flex items-center gap-3.5">
+            <div class="w-11 h-11 rounded-full bg-gradient-to-br from-accent to-accent-dim flex items-center justify-center font-semibold text-[15px] text-primary">AL</div>
+            <div>
+              <div class="font-semibold text-[15px]">Amy Liu</div>
+              <div class="text-sm text-zinc-500">Freelance Designer</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="py-24 lg:py-32 text-center relative overflow-hidden">
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/10 rounded-full blur-[80px]"></div>
+    <div class="max-w-[1240px] mx-auto px-[5vw] relative z-10">
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight mb-5">
+        Ready to take control of your <span class="font-serif italic font-normal text-accent">finances</span>?
+      </h2>
+      <p class="text-lg text-zinc-400 max-w-[500px] mx-auto mb-8">
+        Join thousands of users who trust Finflow to manage their money smarter.
+      </p>
+      <div class="flex items-center justify-center gap-4 flex-wrap">
+        <a href="#" class="px-7 py-3.5 text-[15px] font-semibold bg-accent text-primary rounded-lg hover:bg-accent-dim hover:-translate-y-0.5 hover:shadow-lg hover:shadow-accent/20 transition-all">
+          Get Started Free
+        </a>
+        <a href="#" class="px-7 py-3.5 text-[15px] font-medium bg-white-5 border border-accent-subtle text-zinc-100 rounded-lg hover:bg-white-8 hover:border-accent-hover transition-all">
+          Schedule a Demo
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="py-12 border-t border-accent-subtle">
+    <div class="max-w-[1240px] mx-auto px-[5vw] flex flex-col md:flex-row items-center justify-between gap-6">
+      <!-- Logo -->
+      <a href="#" class="flex items-center gap-2.5 font-semibold text-xl">
+        <div class="w-7 h-7 bg-gradient-to-br from-accent to-accent-dim rounded-md flex items-center justify-center">
+          <svg class="w-4 h-4 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        Finflow
+      </a>
+      
+      <!-- Links -->
+      <div class="flex gap-8">
+        <a href="#" class="text-sm text-zinc-500 hover:text-zinc-100 transition-colors">Twitter</a>
+        <a href="#" class="text-sm text-zinc-500 hover:text-zinc-100 transition-colors">LinkedIn</a>
+        <a href="#" class="text-sm text-zinc-500 hover:text-zinc-100 transition-colors">Privacy</a>
+        <a href="#" class="text-sm text-zinc-500 hover:text-zinc-100 transition-colors">Terms</a>
+        <a href="#" class="text-sm text-zinc-500 hover:text-zinc-100 transition-colors">Help</a>
+      </div>
+      
+      <!-- Copyright -->
+      <p class="text-sm text-zinc-500">© 2024 Finflow. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+</body>
+</html>
