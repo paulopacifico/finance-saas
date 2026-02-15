@@ -24,19 +24,19 @@ const Testimonials = dynamic(
 const CTA = dynamic(() => import("@/components/marketing/CTA").then((mod) => mod.CTA));
 
 export const metadata: Metadata = {
-  title: "Finflow - Master Your Canadian Finances | Personal Finance SaaS",
+  title: "Finflow - Controle financeiro familiar em CAD",
   description:
-    "Connect all your Canadian bank accounts, track spending in real-time, and achieve financial goals with AI-powered insights. Start your free trial today.",
+    "Conecte contas, acompanhe gastos em tempo real e organize o planejamento financeiro da sua familia com o Finflow.",
   keywords: [
-    "personal finance",
-    "budgeting",
-    "Canadian banking",
-    "financial tracking",
+    "financas pessoais",
+    "orcamento familiar",
+    "controle de gastos",
+    "planejamento financeiro",
     "SaaS",
   ],
   openGraph: {
-    title: "Finflow - Master Your Canadian Finances",
-    description: "AI-powered financial management for Canadians",
+    title: "Finflow - Controle financeiro familiar em CAD",
+    description: "Gestao financeira com foco em clareza, seguranca e simplicidade",
     images: ["/landing/images/og-image.png"],
   },
 };

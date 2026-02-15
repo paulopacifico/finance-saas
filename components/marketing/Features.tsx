@@ -3,21 +3,18 @@ import Image from "next/image";
 const features = [
   {
     icon: "/landing/icons/feature1.webp",
-    title: "Real-time Tracking",
-    description:
-      "Monitor all your transactions in real-time with instant notifications.",
+    title: "Acompanhamento em tempo real",
+    description: "Monitore transacoes com atualizacao imediata e alertas relevantes.",
   },
   {
     icon: "/landing/icons/feature2.webp",
-    title: "Smart Budgeting",
-    description:
-      "AI-powered budget recommendations based on your spending patterns.",
+    title: "Orcamento inteligente",
+    description: "Receba sugestoes de ajuste com base no seu padrao de gastos.",
   },
   {
     icon: "/landing/icons/feature3.webp",
-    title: "Bank Integration",
-    description:
-      "Connect all your Canadian bank accounts in one secure platform.",
+    title: "Integracao bancaria",
+    description: "Centralize suas contas em uma unica plataforma segura.",
   },
 ];
 
@@ -26,7 +23,7 @@ export function Features() {
     <section className="rounded-2xl bg-zinc-50 px-4 py-20 sm:px-6 lg:px-10">
       <div className="mx-auto w-full max-w-6xl">
         <h2 className="text-gradient mb-12 text-center text-4xl font-bold text-zinc-900">
-          Powerful Features
+          Recursos essenciais
         </h2>
 
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">

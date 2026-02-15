@@ -1,28 +1,28 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Terms of Service",
-  description: "Terms of service for Finflow personal finance SaaS.",
+  title: "Termos de Uso",
+  description: "Termos de uso do Finflow.",
 };
 
 export default function TermsPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-10">
-      <h1 className="text-3xl font-semibold text-zinc-900">Terms of Service</h1>
-      <p className="mt-4 text-sm text-zinc-600">Effective date: February 14, 2026</p>
+      <h1 className="text-3xl font-semibold text-zinc-900">Termos de Uso</h1>
+      <p className="mt-4 text-sm text-zinc-600">Data de vigencia: 14 de fevereiro de 2026</p>
 
       <section className="mt-8 space-y-4 text-zinc-700">
         <p>
-          By using Finflow, you agree to these terms. You are responsible for your account
-          credentials and all activities under your account.
+          Ao usar o Finflow, voce concorda com estes termos. Voce e responsavel pelas
+          credenciais da sua conta e por toda atividade realizada nela.
         </p>
         <p>
-          Finflow provides financial tooling for informational and planning purposes and
-          does not provide legal, tax, or investment advice.
+          O Finflow oferece ferramentas financeiras para informacao e planejamento e nao
+          fornece consultoria juridica, tributaria ou de investimentos.
         </p>
         <p>
-          We may suspend accounts for abuse, fraud, or behavior that violates applicable
-          law, contractual obligations, or platform security controls.
+          Podemos suspender contas em casos de abuso, fraude ou conduta que viole a lei,
+          obrigacoes contratuais ou controles de seguranca da plataforma.
         </p>
       </section>
     </main>

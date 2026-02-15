@@ -8,10 +8,10 @@ export function CTA() {
         Comece com configuração simples e acompanhe seus gastos em CAD no primeiro dia.
       </p>
       <Link
-        href="/dashboard"
+        href="/signup"
         className="mt-5 inline-flex rounded-md bg-white px-4 py-2 text-sm font-semibold text-zinc-900"
       >
-        Acessar Dashboard
+        Criar conta gratis
       </Link>
     </section>
   );

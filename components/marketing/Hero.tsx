@@ -11,17 +11,17 @@ export function Hero() {
       <div className="container relative z-10 mx-auto grid grid-cols-1 items-center gap-12 px-4 lg:grid-cols-2">
         <div className="animate-slide-up">
           <h1 className="mb-6 text-5xl font-bold leading-tight lg:text-6xl">
-            Master Your Finances with <span className="text-gradient">Finflow</span>
+            Organize suas financas com <span className="text-gradient">Finflow</span>
           </h1>
 
           <p className="mb-8 text-xl text-gray-600">
-            Connect all your Canadian bank accounts, track spending in real-time, and achieve your
-            financial goals with AI-powered insights.
+            Conecte contas, acompanhe gastos em tempo real e tome decisoes melhores para o seu
+            planejamento financeiro familiar.
           </p>
 
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button asChild size="lg" className="bg-brand-500 text-white hover:bg-brand-600">
-              <Link href="/signup">Start Free Trial</Link>
+              <Link href="/signup">Criar conta gratis</Link>
             </Button>
 
             <Button
@@ -30,7 +30,7 @@ export function Hero() {
               variant="outline"
               className="border-brand-500 text-brand-500 hover:bg-brand-50"
             >
-              <Link href="#features">Learn More</Link>
+              <Link href="#features">Ver recursos</Link>
             </Button>
           </div>
 
@@ -42,7 +42,7 @@ export function Hero() {
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                 />
               </svg>
-              <span>Bank-level encryption</span>
+              <span>Seguranca em nivel bancario</span>
             </div>
             <div className="flex items-center gap-2">
               <svg className="h-5 w-5 text-green-500" fill="currentColor" viewBox="0 0 20 20">
@@ -51,7 +51,7 @@ export function Hero() {
                   d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                 />
               </svg>
-              <span>14-day free trial</span>
+              <span>Teste gratis por 14 dias</span>
             </div>
           </div>
         </div>
@@ -59,7 +59,7 @@ export function Hero() {
         <div className="relative animate-float">
           <Image
             src="/landing/images/hero-dashboard.webp"
-            alt="Finflow Dashboard Preview"
+            alt="Preview do dashboard do Finflow"
             width={600}
             height={500}
             className="rounded-lg shadow-2xl"
@@ -70,7 +70,7 @@ export function Hero() {
             className="animate-slide-up absolute -left-6 -top-6 rounded-lg bg-white p-4 shadow-lg"
             style={{ animationDelay: "0.2s" }}
           >
-            <p className="text-sm text-gray-500">Monthly Savings</p>
+            <p className="text-sm text-gray-500">Economia no mes</p>
             <p className="text-2xl font-bold text-income">+$1,240</p>
           </div>
 
@@ -78,7 +78,7 @@ export function Hero() {
             className="animate-slide-up absolute -bottom-6 -right-6 rounded-lg bg-white p-4 shadow-lg"
             style={{ animationDelay: "0.4s" }}
           >
-            <p className="text-sm text-gray-500">Accounts Connected</p>
+            <p className="text-sm text-gray-500">Contas conectadas</p>
             <p className="text-2xl font-bold text-brand-500">5</p>
           </div>
         </div>

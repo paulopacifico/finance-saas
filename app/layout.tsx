@@ -4,14 +4,14 @@ import "./globals.css";
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"),
   title: {
-    default: "Finflow - Master Your Canadian Finances",
+    default: "Finflow - Controle financeiro familiar",
     template: "%s | Finflow",
   },
   description:
-    "AI-powered financial management for Canadians. Track spending, budgets, and achieve your financial goals.",
+    "Gestao financeira familiar com acompanhamento de gastos, orcamentos e metas em CAD.",
   openGraph: {
     type: "website",
-    locale: "en_CA",
+    locale: "pt_BR",
     url: "/",
     siteName: "Finflow",
     images: [
@@ -19,14 +19,14 @@ export const metadata: Metadata = {
         url: "/landing/images/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Finflow - Financial Management",
+        alt: "Finflow - Gestao Financeira",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Finflow - Master Your Canadian Finances",
-    description: "AI-powered financial management for Canadians",
+    title: "Finflow - Controle financeiro familiar",
+    description: "Gestao financeira com foco em clareza, seguranca e simplicidade",
     images: ["/landing/images/og-image.png"],
   },
 };
@@ -37,7 +37,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="pt-BR">
       <body>{children}</body>
     </html>
   );

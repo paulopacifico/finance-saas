@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -23,46 +24,46 @@ function CheckIcon() {
 
 const plans = [
   {
-    name: "Starter",
+    name: "Inicial",
     price: { monthly: 0, annual: 0 },
-    description: "Perfect for individuals tracking personal finances",
+    description: "Ideal para quem esta comecando a organizar as financas",
     features: [
-      "1 bank account connection",
-      "Basic transaction tracking",
-      "Monthly reports",
-      "Mobile app access",
+      "1 conexao bancaria",
+      "Controle basico de transacoes",
+      "Relatorios mensais",
+      "Acesso mobile",
     ],
-    cta: "Start Free",
+    cta: "Comecar gratis",
     popular: false,
   },
   {
     name: "Pro",
     price: { monthly: 12, annual: 120 },
-    description: "For power users who want advanced insights",
+    description: "Para quem precisa de analises e previsoes avancadas",
     features: [
-      "Unlimited bank connections",
-      "AI-powered budgeting",
-      "Real-time notifications",
-      "Export to Excel/PDF",
-      "Priority support",
-      "Goal tracking",
+      "Conexoes bancarias ilimitadas",
+      "Orcamento assistido por IA",
+      "Notificacoes em tempo real",
+      "Exportacao para Excel/PDF",
+      "Suporte prioritario",
+      "Acompanhamento de metas",
     ],
-    cta: "Start Trial",
+    cta: "Iniciar teste",
     popular: true,
   },
   {
-    name: "Business",
+    name: "Empresarial",
     price: { monthly: 29, annual: 290 },
-    description: "For small businesses managing multiple accounts",
+    description: "Para negocios com multiplas contas e operacoes",
     features: [
-      "Everything in Pro",
-      "Multi-user access (up to 5)",
-      "Invoice management",
-      "Tax report generation",
-      "Dedicated account manager",
-      "API access",
+      "Tudo do plano Pro",
+      "Acesso multiusuario (ate 5)",
+      "Gestao de faturas",
+      "Relatorios fiscais",
+      "Gerente de conta dedicado",
+      "Acesso a API",
     ],
-    cta: "Contact Sales",
+    cta: "Falar com vendas",
     popular: false,
   },
 ];
@@ -74,8 +75,8 @@ export function Pricing() {
     <section className="bg-white py-20" id="pricing">
       <div className="container mx-auto px-4">
         <div className="mb-12 text-center">
-          <h2 className="mb-4 text-4xl font-bold">Simple, Transparent Pricing</h2>
-          <p className="mb-8 text-xl text-gray-600">Choose the plan that fits your needs</p>
+          <h2 className="mb-4 text-4xl font-bold">Planos simples e transparentes</h2>
+          <p className="mb-8 text-xl text-gray-600">Escolha o plano ideal para o seu momento</p>
 
           <div className="inline-flex items-center gap-4 rounded-lg bg-gray-100 p-1">
             <button
@@ -84,7 +85,7 @@ export function Pricing() {
                 !isAnnual ? "bg-white shadow" : "text-gray-600"
               }`}
             >
-              Monthly
+              Mensal
             </button>
             <button
               onClick={() => setIsAnnual(true)}
@@ -92,7 +93,7 @@ export function Pricing() {
                 isAnnual ? "bg-white shadow" : "text-gray-600"
               }`}
             >
-              Annual <span className="ml-1 text-sm text-green-600">(Save 17%)</span>
+              Anual <span className="ml-1 text-sm text-green-600">(Economize 17%)</span>
             </button>
           </div>
         </div>
@@ -107,7 +108,7 @@ export function Pricing() {
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-brand-500 px-4 py-1 text-sm font-semibold text-white">
-                  Most Popular
+                  Mais escolhido
                 </div>
               )}
 
@@ -122,22 +123,23 @@ export function Pricing() {
                     ${isAnnual ? plan.price.annual : plan.price.monthly}
                   </span>
                   <span className="text-gray-500">
-                    {plan.price.monthly > 0 && (isAnnual ? "/year" : "/month")}
+                    {plan.price.monthly > 0 && (isAnnual ? "/ano" : "/mes")}
                   </span>
                 </div>
                 {isAnnual && plan.price.monthly > 0 && (
                   <p className="mt-1 text-sm text-gray-500">
-                    ${(plan.price.annual / 12).toFixed(2)}/month billed annually
+                    ${(plan.price.annual / 12).toFixed(2)}/mes com cobranca anual
                   </p>
                 )}
               </div>
 
               <Button
+                asChild
                 className={`mb-6 w-full ${
                   plan.popular ? "bg-brand-500 hover:bg-brand-600" : "bg-gray-900 hover:bg-gray-800"
                 }`}
               >
-                {plan.cta}
+                <Link href="/signup">{plan.cta}</Link>
               </Button>
 
               <ul className="space-y-3">

@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy",
-  description: "Privacy policy for Finflow personal finance SaaS in Canada.",
+  title: "Politica de Privacidade",
+  description: "Politica de privacidade do Finflow para usuarios no Canada.",
 };
 
 export default function PrivacyPage() {
   return (
     <main className="mx-auto w-full max-w-4xl px-4 py-12 sm:px-6 lg:px-10">
-      <h1 className="text-3xl font-semibold text-zinc-900">Privacy Policy</h1>
-      <p className="mt-4 text-sm text-zinc-600">Effective date: February 14, 2026</p>
+      <h1 className="text-3xl font-semibold text-zinc-900">Politica de Privacidade</h1>
+      <p className="mt-4 text-sm text-zinc-600">Data de vigencia: 14 de fevereiro de 2026</p>
 
       <section className="mt-8 space-y-4 text-zinc-700">
         <p>
-          Finflow processes personal and financial data to provide account aggregation,
-          transaction management, budgeting insights, and support services.
+          O Finflow processa dados pessoais e financeiros para oferecer consolidacao de contas,
+          gestao de transacoes, insights de orcamento e suporte.
         </p>
         <p>
-          We collect account profile data, transaction metadata, and product usage logs.
-          We do not sell personal financial data.
+          Coletamos dados de perfil da conta, metadados de transacoes e logs de uso.
+          Nao comercializamos dados financeiros pessoais.
         </p>
         <p>
-          Users may submit requests for access, correction, and deletion through our DSR
-          process. Requests are tracked and processed according to legal obligations.
+          Usuarios podem solicitar acesso, correcao e exclusao por meio do processo de DSR.
+          As solicitacoes sao registradas e tratadas conforme obrigacoes legais.
         </p>
         <p>
-          For privacy requests, contact:
+          Para solicitacoes de privacidade, contate:
           {" "}
           <a className="underline" href="mailto:privacy@finflow.app">
             privacy@finflow.app
