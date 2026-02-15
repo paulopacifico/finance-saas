@@ -7,7 +7,7 @@ export default function MarketingLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <MarketingNav />
-      <main className="min-h-screen">{children}</main>
+      <main className="min-h-screen pt-24">{children}</main>
       <MarketingFooter />
     </>
   );

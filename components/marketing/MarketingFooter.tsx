@@ -2,26 +2,31 @@ import Link from "next/link";
 
 export function MarketingFooter() {
   return (
-    <footer className="border-t border-zinc-200 bg-white">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-3 px-4 py-8 text-sm text-zinc-600 sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10">
-        <p>© {new Date().getFullYear()} Finflow CAD. All rights reserved.</p>
-        <div className="flex items-center gap-4">
-          <Link href="/pricing" className="hover:text-zinc-900">
-            Pricing
-          </Link>
-          <Link href="/features" className="hover:text-zinc-900">
-            Features
-          </Link>
-          <Link href="/privacy" className="hover:text-zinc-900">
-            Privacy
-          </Link>
-          <Link href="/terms" className="hover:text-zinc-900">
-            Terms
-          </Link>
-          <Link href="/data-retention" className="hover:text-zinc-900">
-            Data Retention
-          </Link>
+    <footer className="footer">
+      <div className="footer-container">
+        <Link href="/" className="logo">
+          <div className="logo-icon">
+            <svg
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
+            </svg>
+          </div>
+          Finflow
+        </Link>
+        <div className="footer-links">
+          <Link href="/pricing" className="footer-link">Pricing</Link>
+          <Link href="/features" className="footer-link">Features</Link>
+          <Link href="/privacy" className="footer-link">Privacy</Link>
+          <Link href="/terms" className="footer-link">Terms</Link>
+          <Link href="/data-retention" className="footer-link">Data Retention</Link>
         </div>
+        <p className="footer-copyright">© {new Date().getFullYear()} Finflow. All rights reserved.</p>
       </div>
     </footer>
   );
