@@ -1,13 +1,46 @@
+ "use client";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FormEvent, useState } from "react";
+
+import { supabaseClient } from "@/lib/supabase/client";
 
 export default function LoginPage() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setErrorMessage(null);
+    setIsSubmitting(true);
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    setIsSubmitting(false);
+
+    if (error) {
+      setErrorMessage(error.message);
+      return;
+    }
+
+    router.push("/dashboard");
+    router.refresh();
+  };
+
   return (
     <section className="px-4 py-16 sm:px-6 lg:px-10">
       <div className="mx-auto w-full max-w-[560px] rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8">
         <h1 className="text-3xl font-semibold text-[var(--text-primary)]">Sign In</h1>
         <p className="mt-3 text-sm text-[var(--text-secondary)]">Sign in with your email and password.</p>
 
-        <form className="mt-6 space-y-4">
+        <form className="mt-6 space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-1">
             <label htmlFor="email" className="block text-sm font-medium text-[var(--text-primary)]">
               Email
@@ -16,6 +49,10 @@ export default function LoginPage() {
               id="email"
               type="email"
               placeholder="you@company.com"
+              autoComplete="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              required
               className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--border-hover)]"
             />
           </div>
@@ -28,12 +65,22 @@ export default function LoginPage() {
               id="password"
               type="password"
               placeholder="••••••••"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
               className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--border-hover)]"
             />
           </div>
 
-          <button type="submit" className="btn btn-primary w-full">
-            Sign In
+          {errorMessage ? (
+            <p className="text-sm text-red-400" role="alert">
+              {errorMessage}
+            </p>
+          ) : null}
+
+          <button type="submit" className="btn btn-primary w-full" disabled={isSubmitting}>
+            {isSubmitting ? "Signing in..." : "Sign In"}
           </button>
         </form>
 
