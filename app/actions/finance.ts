@@ -39,6 +39,46 @@ const transactionSchema = z.object({
   currency: optionalString(3),
 });
 
+const optionalPositiveNumber = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce.number().positive().optional(),
+);
+
+const optionalDate = z.preprocess(
+  (value) => (value === "" ? undefined : value),
+  z.coerce.date().optional(),
+);
+
+const updateTransactionSchema = z
+  .object({
+    transactionId: z.string().min(1),
+    accountId: optionalString(255),
+    categoryId: optionalString(255),
+    type: z.nativeEnum(TransactionType).optional(),
+    amount: optionalPositiveNumber,
+    transactionAt: optionalDate,
+    description: optionalString(255),
+    currency: optionalString(3),
+  })
+  .refine(
+    (payload) =>
+      payload.accountId !== undefined ||
+      payload.categoryId !== undefined ||
+      payload.type !== undefined ||
+      payload.amount !== undefined ||
+      payload.transactionAt !== undefined ||
+      payload.description !== undefined ||
+      payload.currency !== undefined,
+    {
+      message: "Provide at least one field to update",
+      path: ["transactionId"],
+    },
+  );
+
+const deleteTransactionSchema = z.object({
+  transactionId: z.string().min(1),
+});
+
 const budgetSchema = z
   .object({
     name: z.string().trim().min(1).max(120),
@@ -209,6 +249,114 @@ export async function createBudget(formData: FormData): Promise<ActionResult<{ i
       return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
     }
     return { ok: false, error: "Failed to create budget" };
+  }
+}
+
+export async function updateTransaction(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  try {
+    const payload = updateTransactionSchema.parse(parseFormData(formData));
+    const userId = await requireAuthenticatedUserId();
+
+    if (payload.accountId) {
+      const account = await prisma.account.findFirst({
+        where: { id: payload.accountId, userId, deletedAt: null, isActive: true },
+        select: { id: true },
+      });
+
+      if (!account) {
+        return { ok: false, error: "Invalid account for this user" };
+      }
+    }
+
+    if (payload.categoryId) {
+      const category = await prisma.category.findFirst({
+        where: { id: payload.categoryId, userId, deletedAt: null },
+        select: { id: true },
+      });
+
+      if (!category) {
+        return { ok: false, error: "Invalid category for this user" };
+      }
+    }
+
+    const updated = await prisma.transaction.updateMany({
+      where: {
+        id: payload.transactionId,
+        userId,
+        deletedAt: null,
+      },
+      data: {
+        ...(payload.accountId !== undefined ? { accountId: payload.accountId } : {}),
+        ...(payload.categoryId !== undefined ? { categoryId: payload.categoryId } : {}),
+        ...(payload.type !== undefined ? { type: payload.type } : {}),
+        ...(payload.amount !== undefined
+          ? { amount: new Prisma.Decimal(payload.amount) }
+          : {}),
+        ...(payload.transactionAt !== undefined ? { transactionAt: payload.transactionAt } : {}),
+        ...(payload.description !== undefined ? { description: payload.description } : {}),
+        ...(payload.currency !== undefined ? { currency: payload.currency.toUpperCase() } : {}),
+      },
+    });
+
+    if (updated.count === 0) {
+      return { ok: false, error: "Transaction not found for this user" };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "TRANSACTION_UPDATE",
+      resource: "transactions",
+      metadata: { transactionId: payload.transactionId },
+    });
+    return { ok: true, data: { id: payload.transactionId } };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
+    }
+    return { ok: false, error: "Failed to update transaction" };
+  }
+}
+
+export async function deleteTransaction(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  try {
+    const payload = deleteTransactionSchema.parse(parseFormData(formData));
+    const userId = await requireAuthenticatedUserId();
+
+    const deleted = await prisma.transaction.updateMany({
+      where: {
+        id: payload.transactionId,
+        userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    if (deleted.count === 0) {
+      return { ok: false, error: "Transaction not found for this user" };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "TRANSACTION_DELETE",
+      resource: "transactions",
+      metadata: { transactionId: payload.transactionId },
+    });
+    return { ok: true, data: { id: payload.transactionId } };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
+    }
+    return { ok: false, error: "Failed to delete transaction" };
   }
 }
 

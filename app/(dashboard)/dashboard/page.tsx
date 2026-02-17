@@ -103,7 +103,11 @@ export default async function DashboardPage() {
           </p>
         </header>
         <CreateTransactionForm accounts={accounts} categories={categories} />
-        <TransactionTable transactions={transactions} defaultPageSize={10} />
+        <TransactionTable
+          transactions={transactions}
+          categories={categories}
+          defaultPageSize={10}
+        />
       </main>
     </div>
   );
