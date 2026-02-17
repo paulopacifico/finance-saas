@@ -1,24 +1,36 @@
-import { createTransaction } from "@/app/actions/finance";
+"use client";
 
-type Option = {
-  id: string;
-  name: string;
-};
+import { createTransaction } from "@/app/actions/finance";
+import type { FinanceOption } from "@/lib/types/finance";
+import { useRouter } from "next/navigation";
+import { useMemo, useState, useTransition } from "react";
 
 type CreateTransactionFormProps = {
-  accounts: Option[];
-  categories: Option[];
+  accounts: FinanceOption[];
+  categories: FinanceOption[];
 };
 
 const DEFAULT_DATETIME = new Date().toISOString().slice(0, 16);
 
 export function CreateTransactionForm({ accounts, categories }: CreateTransactionFormProps) {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+  const [status, setStatus] = useState<{ kind: "success" | "error"; message: string } | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[]>>({});
   const hasRequiredOptions = accounts.length > 0 && categories.length > 0;
 
-  async function submitTransaction(formData: FormData) {
-    "use server";
-    await createTransaction(formData);
-  }
+  const resettableDefaults = useMemo(
+    () => ({
+      accountId: accounts[0]?.id ?? "",
+      categoryId: categories[0]?.id ?? "",
+      type: "EXPENSE",
+      currency: "CAD",
+      transactionAt: DEFAULT_DATETIME,
+    }),
+    [accounts, categories],
+  );
+
+  const readFieldError = (field: string) => fieldErrors[field]?.[0] ?? null;
 
   return (
     <section className="w-full rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-5 shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
@@ -36,15 +48,47 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </p>
       ) : null}
 
-      <form action={submitTransaction} className="grid gap-3 sm:grid-cols-2">
+      {status ? (
+        <p
+          className={`mb-4 rounded-lg border px-3 py-2 text-sm ${
+            status.kind === "success"
+              ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-200"
+              : "border-rose-500/40 bg-rose-500/10 text-rose-200"
+          }`}
+        >
+          {status.message}
+        </p>
+      ) : null}
+
+      <form
+        action={(formData) => {
+          startTransition(() => {
+            void (async () => {
+              setStatus(null);
+              setFieldErrors({});
+              const result = await createTransaction(formData);
+
+              if (!result.ok) {
+                setStatus({ kind: "error", message: result.error });
+                setFieldErrors(result.fields ?? {});
+                return;
+              }
+
+              setStatus({ kind: "success", message: "Transaction created successfully." });
+              router.refresh();
+            })();
+          });
+        }}
+        className="grid gap-3 sm:grid-cols-2"
+      >
         <label className="flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
           Account
           <select
             name="accountId"
             required
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
-            defaultValue={accounts[0]?.id ?? ""}
+            defaultValue={resettableDefaults.accountId}
           >
             {accounts.map((account) => (
               <option key={account.id} value={account.id}>
@@ -52,6 +96,9 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
               </option>
             ))}
           </select>
+          {readFieldError("accountId") ? (
+            <span className="text-xs text-rose-300">{readFieldError("accountId")}</span>
+          ) : null}
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
@@ -59,9 +106,9 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
           <select
             name="categoryId"
             required
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
-            defaultValue={categories[0]?.id ?? ""}
+            defaultValue={resettableDefaults.categoryId}
           >
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
@@ -69,6 +116,9 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
               </option>
             ))}
           </select>
+          {readFieldError("categoryId") ? (
+            <span className="text-xs text-rose-300">{readFieldError("categoryId")}</span>
+          ) : null}
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
@@ -76,9 +126,9 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
           <select
             name="type"
             required
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
-            defaultValue="EXPENSE"
+            defaultValue={resettableDefaults.type}
           >
             <option value="EXPENSE">Expense</option>
             <option value="INCOME">Income</option>
@@ -94,10 +144,13 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             step="0.01"
             min="0.01"
             required
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
             placeholder="0.00"
           />
+          {readFieldError("amount") ? (
+            <span className="text-xs text-rose-300">{readFieldError("amount")}</span>
+          ) : null}
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
@@ -106,10 +159,13 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             name="transactionAt"
             type="datetime-local"
             required
-            disabled={!hasRequiredOptions}
-            defaultValue={DEFAULT_DATETIME}
+            disabled={!hasRequiredOptions || isPending}
+            defaultValue={resettableDefaults.transactionAt}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
           />
+          {readFieldError("transactionAt") ? (
+            <span className="text-xs text-rose-300">{readFieldError("transactionAt")}</span>
+          ) : null}
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
@@ -118,10 +174,13 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             name="currency"
             type="text"
             maxLength={3}
-            defaultValue="CAD"
-            disabled={!hasRequiredOptions}
+            defaultValue={resettableDefaults.currency}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm uppercase text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
           />
+          {readFieldError("currency") ? (
+            <span className="text-xs text-rose-300">{readFieldError("currency")}</span>
+          ) : null}
         </label>
 
         <label className="sm:col-span-2 flex flex-col gap-1 text-sm text-[var(--text-secondary)]">
@@ -130,19 +189,26 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             name="description"
             type="text"
             maxLength={255}
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-2 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)] disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="e.g., grocery store"
+            placeholder="e.g., Monthly grocery run at FreshCo"
           />
         </label>
 
-        <div className="sm:col-span-2">
+        <div className="sm:col-span-2 flex gap-2">
           <button
             type="submit"
-            disabled={!hasRequiredOptions}
+            disabled={!hasRequiredOptions || isPending}
             className="rounded-lg border border-[var(--accent-dim)] bg-[var(--accent)] px-4 py-2 text-sm font-semibold text-[var(--bg-primary)] transition hover:bg-[var(--accent-dim)] disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Save transaction
+            {isPending ? "Saving..." : "Save transaction"}
+          </button>
+          <button
+            type="reset"
+            disabled={isPending}
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-2 text-sm text-[var(--text-primary)] transition hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            Clear
           </button>
         </div>
       </form>

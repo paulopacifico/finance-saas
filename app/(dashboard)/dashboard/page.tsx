@@ -1,3 +1,4 @@
+import { DashboardOverview } from "@/components/dashboard/dashboard-overview";
 import { CreateTransactionForm } from "@/components/transactions/create-transaction-form";
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { getDashboardTransactions } from "@/lib/data/finance";
@@ -63,6 +64,7 @@ export default async function DashboardPage() {
           select: {
             id: true,
             name: true,
+            currentBalance: true,
           },
         }),
     useMockData
@@ -92,6 +94,14 @@ export default async function DashboardPage() {
     });
   }
 
+  const serializedAccounts = accounts.map((account) => ({
+    ...account,
+    currentBalance:
+      account.currentBalance && typeof account.currentBalance === "object"
+        ? account.currentBalance.toString()
+        : account.currentBalance,
+  }));
+
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] px-4 py-10 sm:px-6 lg:px-10">
       <main className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6">
@@ -102,9 +112,11 @@ export default async function DashboardPage() {
             Server-cached data with automatic revalidation and tag invalidation.
           </p>
         </header>
-        <CreateTransactionForm accounts={accounts} categories={categories} />
+        <DashboardOverview transactions={transactions} accounts={serializedAccounts} />
+        <CreateTransactionForm accounts={serializedAccounts} categories={categories} />
         <TransactionTable
           transactions={transactions}
+          accounts={serializedAccounts}
           categories={categories}
           defaultPageSize={10}
         />

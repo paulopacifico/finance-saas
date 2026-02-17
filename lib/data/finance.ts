@@ -1,6 +1,6 @@
 import { unstable_cache } from "next/cache";
 
-import type { TransactionTableItem } from "@/components/transactions/transaction-table";
+import type { TransactionTableItem } from "@/lib/types/finance";
 import { assertNoE2EBypassInProduction } from "@/lib/security/production-guard";
 
 const E2E_USER_ID = process.env.E2E_USER_ID ?? "e2e-user";
@@ -13,7 +13,9 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "89.90",
     currency: "CAD",
     transactionAt: "2026-02-01T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-bills", name: "Bills" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-02",
@@ -21,7 +23,9 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "64.10",
     currency: "CAD",
     transactionAt: "2026-01-30T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-bills", name: "Bills" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-03",
@@ -29,15 +33,19 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "19.99",
     currency: "CAD",
     transactionAt: "2026-01-29T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-bills", name: "Bills" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-04",
-    description: "Grocery store",
-    amount: "142.33",
+    description: "Payroll deposit",
+    amount: "2400.00",
     currency: "CAD",
     transactionAt: "2026-01-28T10:00:00.000Z",
-    category: { id: "cat-food", name: "Food" },
+    type: "INCOME",
+    category: { id: "cat-salary", name: "Salary" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-05",
@@ -45,7 +53,9 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "32.50",
     currency: "CAD",
     transactionAt: "2026-01-27T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-health", name: "Health" },
+    account: { id: "acc-card", name: "Credit Card", currentBalance: "-620.55" },
   },
   {
     id: "tx-e2e-06",
@@ -53,7 +63,9 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "12.00",
     currency: "CAD",
     transactionAt: "2026-01-26T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-subscriptions", name: "Subscriptions" },
+    account: { id: "acc-card", name: "Credit Card", currentBalance: "-620.55" },
   },
   {
     id: "tx-e2e-07",
@@ -61,15 +73,19 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "54.25",
     currency: "CAD",
     transactionAt: "2026-01-25T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-food", name: "Food" },
+    account: { id: "acc-card", name: "Credit Card", currentBalance: "-620.55" },
   },
   {
     id: "tx-e2e-08",
-    description: "Gym",
-    amount: "45.00",
+    description: "Transfer to savings",
+    amount: "500.00",
     currency: "CAD",
     transactionAt: "2026-01-24T10:00:00.000Z",
-    category: { id: "cat-health", name: "Health" },
+    type: "TRANSFER",
+    category: { id: "cat-transfer", name: "Transfers" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-09",
@@ -77,15 +93,19 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "55.75",
     currency: "CAD",
     transactionAt: "2026-01-23T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-bills", name: "Bills" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
   {
     id: "tx-e2e-10",
-    description: "Home insurance",
-    amount: "78.00",
+    description: "Cashback reward",
+    amount: "25.00",
     currency: "CAD",
     transactionAt: "2026-01-22T10:00:00.000Z",
-    category: { id: "cat-insurance", name: "Insurance" },
+    type: "INCOME",
+    category: { id: "cat-reward", name: "Rewards" },
+    account: { id: "acc-card", name: "Credit Card", currentBalance: "-620.55" },
   },
   {
     id: "tx-e2e-11",
@@ -93,7 +113,9 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
     amount: "9.50",
     currency: "CAD",
     transactionAt: "2026-01-21T10:00:00.000Z",
+    type: "EXPENSE",
     category: { id: "cat-transport", name: "Transport" },
+    account: { id: "acc-main", name: "Main Account", currentBalance: "4320.18" },
   },
 ];
 
@@ -119,6 +141,13 @@ const getRecentTransactionsCached = unstable_cache(
             name: true,
           },
         },
+        account: {
+          select: {
+            id: true,
+            name: true,
+            currentBalance: true,
+          },
+        },
       },
       take: 100,
     });
@@ -129,10 +158,18 @@ const getRecentTransactionsCached = unstable_cache(
       description: transaction.description,
       currency: transaction.currency,
       transactionAt: transaction.transactionAt.toISOString(),
+      type: transaction.type,
       category: transaction.category
         ? {
             id: transaction.category.id,
             name: transaction.category.name,
+          }
+        : null,
+      account: transaction.account
+        ? {
+            id: transaction.account.id,
+            name: transaction.account.name,
+            currentBalance: transaction.account.currentBalance.toString(),
           }
         : null,
     }));

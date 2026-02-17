@@ -79,6 +79,14 @@ const deleteTransactionSchema = z.object({
   transactionId: z.string().min(1),
 });
 
+const restoreTransactionSchema = z.object({
+  transactionId: z.string().min(1),
+});
+
+const bulkDeleteTransactionsSchema = z.object({
+  transactionIds: z.string().min(1),
+});
+
 const budgetSchema = z
   .object({
     name: z.string().trim().min(1).max(120),
@@ -357,6 +365,106 @@ export async function deleteTransaction(formData: FormData): Promise<ActionResul
       return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
     }
     return { ok: false, error: "Failed to delete transaction" };
+  }
+}
+
+export async function restoreTransaction(formData: FormData): Promise<ActionResult<{ id: string }>> {
+  try {
+    const payload = restoreTransactionSchema.parse(parseFormData(formData));
+    const userId = await requireAuthenticatedUserId();
+
+    const restored = await prisma.transaction.updateMany({
+      where: {
+        id: payload.transactionId,
+        userId,
+        deletedAt: {
+          not: null,
+        },
+      },
+      data: {
+        deletedAt: null,
+      },
+    });
+
+    if (restored.count === 0) {
+      return { ok: false, error: "Transaction could not be restored" };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "TRANSACTION_RESTORE",
+      resource: "transactions",
+      metadata: { transactionId: payload.transactionId },
+    });
+    return { ok: true, data: { id: payload.transactionId } };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
+    }
+    return { ok: false, error: "Failed to restore transaction" };
+  }
+}
+
+export async function bulkDeleteTransactions(
+  formData: FormData,
+): Promise<ActionResult<{ count: number }>> {
+  try {
+    const payload = bulkDeleteTransactionsSchema.parse(parseFormData(formData));
+    const userId = await requireAuthenticatedUserId();
+    const transactionIds = Array.from(
+      new Set(
+        payload.transactionIds
+          .split(",")
+          .map((id) => id.trim())
+          .filter((id) => id.length > 0),
+      ),
+    );
+
+    if (transactionIds.length === 0) {
+      return { ok: false, error: "No transactions selected" };
+    }
+
+    if (transactionIds.length > 100) {
+      return { ok: false, error: "You can delete up to 100 transactions at once" };
+    }
+
+    const deleted = await prisma.transaction.updateMany({
+      where: {
+        id: {
+          in: transactionIds,
+        },
+        userId,
+        deletedAt: null,
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+
+    if (deleted.count === 0) {
+      return { ok: false, error: "No matching transactions found" };
+    }
+
+    revalidatePath("/");
+    revalidatePath("/dashboard");
+    revalidateTag("transactions", "max");
+    await createAuditLog({
+      actorUserId: userId,
+      targetUserId: userId,
+      action: "TRANSACTION_BULK_DELETE",
+      resource: "transactions",
+      metadata: { count: deleted.count },
+    });
+    return { ok: true, data: { count: deleted.count } };
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      return { ok: false, error: "Validation failed", fields: toFieldErrors(error) };
+    }
+    return { ok: false, error: "Failed to delete selected transactions" };
   }
 }
 
