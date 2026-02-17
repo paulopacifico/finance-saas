@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { prisma } from "@/lib/prisma";
 import { createAuditLog } from "@/lib/security/audit-log";
-import { createSupabaseActionClient } from "@/lib/supabase/actions";
+import { createSupabaseActionClient, ensureAppUserRecord } from "@/lib/supabase/actions";
 
 type ActionResult<T> =
   | { ok: true; data: T }
@@ -103,6 +103,7 @@ async function requireAuthenticatedUserId() {
     throw new Error("Unauthorized");
   }
 
+  await ensureAppUserRecord(user);
   return user.id;
 }
 

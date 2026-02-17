@@ -13,6 +13,7 @@ import { DsrRequestType } from "@prisma/client";
 
 vi.mock("@/lib/supabase/actions", () => ({
   createSupabaseActionClient: vi.fn(),
+  ensureAppUserRecord: vi.fn(),
 }));
 
 vi.mock("@/lib/security/audit-log", () => ({

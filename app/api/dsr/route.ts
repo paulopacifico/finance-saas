@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 
 import { createAuditLog } from "@/lib/security/audit-log";
-import { createSupabaseActionClient } from "@/lib/supabase/actions";
+import { createSupabaseActionClient, ensureAppUserRecord } from "@/lib/supabase/actions";
 
 const dsrSchema = z.object({
   type: z.nativeEnum(DsrRequestType),
@@ -23,6 +23,7 @@ async function getAuthenticatedUserId() {
     return null;
   }
 
+  await ensureAppUserRecord(user);
   return user.id;
 }
 
@@ -78,21 +79,28 @@ export async function GET() {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { prisma } = await import("@/lib/prisma");
-  const requests = await prisma.dataSubjectRequest.findMany({
-    where: { userId },
-    orderBy: { createdAt: "desc" },
-    select: {
-      id: true,
-      type: true,
-      status: true,
-      details: true,
-      createdAt: true,
-      updatedAt: true,
-      resolvedAt: true,
-    },
-    take: 50,
-  });
+  try {
+    const { prisma } = await import("@/lib/prisma");
+    const requests = await prisma.dataSubjectRequest.findMany({
+      where: { userId },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        type: true,
+        status: true,
+        details: true,
+        createdAt: true,
+        updatedAt: true,
+        resolvedAt: true,
+      },
+      take: 50,
+    });
 
-  return NextResponse.json({ requests });
+    return NextResponse.json({ requests });
+  } catch {
+    return NextResponse.json(
+      { error: "Unable to fetch DSR requests" },
+      { status: 500 },
+    );
+  }
 }
