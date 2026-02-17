@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
-import { supabaseClient } from "@/lib/supabase/client";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
   const router = useRouter();
@@ -21,32 +21,41 @@ export default function SignupPage() {
     setSuccessMessage(null);
     setIsSubmitting(true);
 
-    const emailRedirectTo = `${window.location.origin}/auth/callback?next=/dashboard`;
-    const { data, error } = await supabaseClient.auth.signUp({
-      email,
-      password,
-      options: {
-        emailRedirectTo,
-        data: {
-          full_name: fullName,
+    try {
+      const supabase = getSupabaseBrowserClient();
+      const emailRedirectTo = `${window.location.origin}/auth/callback?next=/dashboard`;
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo,
+          data: {
+            full_name: fullName,
+          },
         },
-      },
-    });
+      });
 
-    setIsSubmitting(false);
+      if (error) {
+        setErrorMessage(error.message);
+        return;
+      }
 
-    if (error) {
-      setErrorMessage(error.message);
-      return;
+      if (data.session) {
+        router.push("/dashboard");
+        router.refresh();
+        return;
+      }
+
+      setSuccessMessage("Check your inbox to confirm your email and finish sign up.");
+    } catch (error) {
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Unable to initialize authentication. Check environment variables.",
+      );
+    } finally {
+      setIsSubmitting(false);
     }
-
-    if (data.session) {
-      router.push("/dashboard");
-      router.refresh();
-      return;
-    }
-
-    setSuccessMessage("Check your inbox to confirm your email and finish sign up.");
   };
 
   return (
