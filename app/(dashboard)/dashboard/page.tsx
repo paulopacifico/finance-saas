@@ -35,7 +35,7 @@ export default async function DashboardPage() {
   if (!effectiveUserId) {
     return (
       <div className="min-h-screen bg-[var(--bg-primary)] px-4 py-10 sm:px-6 lg:px-10">
-        <main className="mx-auto w-full max-w-3xl rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+        <main className="mx-auto w-full max-w-3xl rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-8 text-center shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
           <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Dashboard</h1>
           <p className="mt-2 text-sm text-[var(--text-secondary)]">
             Sign in to view your financial transactions.
@@ -94,8 +94,8 @@ export default async function DashboardPage() {
 
   return (
     <div className="min-h-screen bg-[var(--bg-primary)] px-4 py-10 sm:px-6 lg:px-10">
-      <main className="mx-auto flex w-full max-w-6xl flex-col gap-6">
-        <header className="relative overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
+      <main className="mx-auto flex w-full max-w-6xl flex-col items-center gap-6">
+        <header className="relative w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-6 text-center shadow-[0_24px_60px_rgba(0,0,0,0.35)]">
           <div className="pointer-events-none absolute -right-8 top-1/2 h-28 w-28 -translate-y-1/2 rounded-full bg-[var(--accent-glow)] blur-2xl" />
           <h1 className="text-2xl font-semibold text-[var(--text-primary)]">Finance Dashboard</h1>
           <p className="text-sm text-[var(--text-secondary)]">
