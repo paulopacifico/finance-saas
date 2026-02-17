@@ -1,3 +1,4 @@
+import { AccountType, CategoryType } from "@prisma/client";
 import { createServerClient } from "@supabase/ssr";
 import type { User } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
@@ -55,6 +56,7 @@ export async function ensureAppUserRecord(user: Pick<User, "id" | "email" | "use
   const { prisma } = await import("@/lib/prisma");
   const email = resolveUserEmail(user);
   const fullName = resolveUserFullName(user);
+  const defaultAccountId = `${user.id}-default-account`;
 
   await prisma.user.upsert({
     where: { id: user.id },
@@ -68,4 +70,79 @@ export async function ensureAppUserRecord(user: Pick<User, "id" | "email" | "use
       fullName,
     },
   });
+
+  await prisma.account.upsert({
+    where: {
+      id: defaultAccountId,
+    },
+    update: {
+      deletedAt: null,
+      isActive: true,
+    },
+    create: {
+      id: defaultAccountId,
+      userId: user.id,
+      name: "Main Account",
+      type: AccountType.CHEQUING,
+      currency: "CAD",
+      isActive: true,
+    },
+  });
+
+  await Promise.all([
+    prisma.category.upsert({
+      where: {
+        userId_name_type: {
+          userId: user.id,
+          name: "General Expense",
+          type: CategoryType.EXPENSE,
+        },
+      },
+      update: {
+        deletedAt: null,
+      },
+      create: {
+        userId: user.id,
+        name: "General Expense",
+        type: CategoryType.EXPENSE,
+        isSystem: true,
+      },
+    }),
+    prisma.category.upsert({
+      where: {
+        userId_name_type: {
+          userId: user.id,
+          name: "General Income",
+          type: CategoryType.INCOME,
+        },
+      },
+      update: {
+        deletedAt: null,
+      },
+      create: {
+        userId: user.id,
+        name: "General Income",
+        type: CategoryType.INCOME,
+        isSystem: true,
+      },
+    }),
+    prisma.category.upsert({
+      where: {
+        userId_name_type: {
+          userId: user.id,
+          name: "General Transfer",
+          type: CategoryType.TRANSFER,
+        },
+      },
+      update: {
+        deletedAt: null,
+      },
+      create: {
+        userId: user.id,
+        name: "General Transfer",
+        type: CategoryType.TRANSFER,
+        isSystem: true,
+      },
+    }),
+  ]);
 }

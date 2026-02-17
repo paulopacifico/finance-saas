@@ -1,8 +1,10 @@
+import { CreateTransactionForm } from "@/components/transactions/create-transaction-form";
 import { TransactionTable } from "@/components/transactions/transaction-table";
 import { getDashboardTransactions } from "@/lib/data/finance";
+import { prisma } from "@/lib/prisma";
 import { createAuditLog, shouldSampleEvent } from "@/lib/security/audit-log";
 import { assertNoE2EBypassInProduction } from "@/lib/security/production-guard";
-import { createSupabaseActionClient } from "@/lib/supabase/actions";
+import { createSupabaseActionClient, ensureAppUserRecord } from "@/lib/supabase/actions";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +12,7 @@ export default async function DashboardPage() {
   const auditSampleRate = Number(process.env.DASHBOARD_VIEW_AUDIT_SAMPLE_RATE ?? "0.1");
   assertNoE2EBypassInProduction();
   const e2eBypassAuth = process.env.E2E_BYPASS_AUTH === "true";
+  const e2eUseMockData = process.env.E2E_USE_MOCK_DATA === "true";
   const e2eUserId = process.env.E2E_USER_ID ?? "e2e-user";
 
   let effectiveUserId: string | null = null;
@@ -21,6 +24,11 @@ export default async function DashboardPage() {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    if (user) {
+      await ensureAppUserRecord(user);
+    }
+
     effectiveUserId = user?.id ?? null;
   }
 
@@ -37,7 +45,43 @@ export default async function DashboardPage() {
     );
   }
 
-  const transactions = await getDashboardTransactions(effectiveUserId);
+  const useMockData = e2eBypassAuth && e2eUseMockData && effectiveUserId === e2eUserId;
+
+  const [transactions, accounts, categories] = await Promise.all([
+    getDashboardTransactions(effectiveUserId),
+    useMockData
+      ? Promise.resolve([])
+      : prisma.account.findMany({
+          where: {
+            userId: effectiveUserId,
+            deletedAt: null,
+            isActive: true,
+          },
+          orderBy: {
+            name: "asc",
+          },
+          select: {
+            id: true,
+            name: true,
+          },
+        }),
+    useMockData
+      ? Promise.resolve([])
+      : prisma.category.findMany({
+          where: {
+            userId: effectiveUserId,
+            deletedAt: null,
+          },
+          orderBy: {
+            name: "asc",
+          },
+          select: {
+            id: true,
+            name: true,
+          },
+        }),
+  ]);
+
   if (shouldSampleEvent(auditSampleRate)) {
     await createAuditLog({
       actorUserId: effectiveUserId,
@@ -57,6 +101,7 @@ export default async function DashboardPage() {
             Dados cacheados no server com revalidação automática e invalidação por tags.
           </p>
         </header>
+        <CreateTransactionForm accounts={accounts} categories={categories} />
         <TransactionTable transactions={transactions} defaultPageSize={10} />
       </main>
     </div>
