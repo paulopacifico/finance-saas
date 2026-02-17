@@ -1,11 +1,11 @@
 const testimonials = [
   {
-    quote: "Finalmente conseguimos acompanhar despesas mensais sem planilhas soltas.",
-    author: "Família S., Toronto",
+    quote: "We finally track monthly expenses without disconnected spreadsheets.",
+    author: "Family S., Toronto",
   },
   {
-    quote: "A visão por categoria ajudou a cortar gastos recorrentes em 2 meses.",
-    author: "Família P., Vancouver",
+    quote: "Category visibility helped us reduce recurring spending in just 2 months.",
+    author: "Family P., Vancouver",
   },
 ];
 

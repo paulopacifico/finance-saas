@@ -38,7 +38,7 @@ export default async function DashboardPage() {
         <main className="mx-auto w-full max-w-3xl rounded-xl border border-zinc-200 bg-white p-8">
           <h1 className="text-2xl font-semibold text-zinc-900">Dashboard</h1>
           <p className="mt-2 text-sm text-zinc-600">
-            Faça login para visualizar suas transações financeiras.
+            Sign in to view your financial transactions.
           </p>
         </main>
       </div>
@@ -98,7 +98,7 @@ export default async function DashboardPage() {
         <header className="space-y-1">
           <h1 className="text-2xl font-semibold text-zinc-900">Finance Dashboard</h1>
           <p className="text-sm text-zinc-600">
-            Dados cacheados no server com revalidação automática e invalidação por tags.
+            Server-cached data with automatic revalidation and tag invalidation.
           </p>
         </header>
         <CreateTransactionForm accounts={accounts} categories={categories} />

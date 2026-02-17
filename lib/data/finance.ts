@@ -9,7 +9,7 @@ const E2E_USE_MOCK_DATA = process.env.E2E_USE_MOCK_DATA === "true";
 const e2eTransactionsFixture: TransactionTableItem[] = [
   {
     id: "tx-e2e-01",
-    description: "Internet residencial",
+    description: "Home internet",
     amount: "89.90",
     currency: "CAD",
     transactionAt: "2026-02-01T10:00:00.000Z",
@@ -17,7 +17,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-02",
-    description: "Eletricidade",
+    description: "Electricity",
     amount: "64.10",
     currency: "CAD",
     transactionAt: "2026-01-30T10:00:00.000Z",
@@ -33,7 +33,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-04",
-    description: "Supermercado",
+    description: "Grocery store",
     amount: "142.33",
     currency: "CAD",
     transactionAt: "2026-01-28T10:00:00.000Z",
@@ -41,7 +41,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-05",
-    description: "Farmácia",
+    description: "Pharmacy",
     amount: "32.50",
     currency: "CAD",
     transactionAt: "2026-01-27T10:00:00.000Z",
@@ -49,7 +49,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-06",
-    description: "Assinatura de software",
+    description: "Software subscription",
     amount: "12.00",
     currency: "CAD",
     transactionAt: "2026-01-26T10:00:00.000Z",
@@ -57,7 +57,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-07",
-    description: "Restaurante",
+    description: "Restaurant",
     amount: "54.25",
     currency: "CAD",
     transactionAt: "2026-01-25T10:00:00.000Z",
@@ -65,7 +65,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-08",
-    description: "Academia",
+    description: "Gym",
     amount: "45.00",
     currency: "CAD",
     transactionAt: "2026-01-24T10:00:00.000Z",
@@ -73,7 +73,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-09",
-    description: "Plano celular",
+    description: "Mobile plan",
     amount: "55.75",
     currency: "CAD",
     transactionAt: "2026-01-23T10:00:00.000Z",
@@ -81,7 +81,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-10",
-    description: "Seguro residencial",
+    description: "Home insurance",
     amount: "78.00",
     currency: "CAD",
     transactionAt: "2026-01-22T10:00:00.000Z",
@@ -89,7 +89,7 @@ const e2eTransactionsFixture: TransactionTableItem[] = [
   },
   {
     id: "tx-e2e-11",
-    description: "Transporte público",
+    description: "Public transit",
     amount: "9.50",
     currency: "CAD",
     transactionAt: "2026-01-21T10:00:00.000Z",

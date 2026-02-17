@@ -73,13 +73,14 @@ export function TransactionTable({
         <div>
           <h2 className="text-lg font-semibold text-zinc-900">Transactions</h2>
           <p className="text-sm text-zinc-500">
-            {filteredTransactions.length} registro(s) encontrado(s)
+            {filteredTransactions.length} record(s) found
           </p>
         </div>
 
         <label className="flex items-center gap-2 text-sm text-zinc-700">
-          Categoria
+          Category
           <select
+            data-testid="transaction-category-filter"
             value={selectedCategory}
             onChange={(event) => {
               setSelectedCategory(event.target.value);
@@ -87,7 +88,7 @@ export function TransactionTable({
             }}
             className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm focus:border-zinc-500 focus:outline-none"
           >
-            <option value="all">Todas</option>
+            <option value="all">All</option>
             {categories.map((category) => (
               <option key={category} value={category}>
                 {category}
@@ -101,10 +102,10 @@ export function TransactionTable({
         <table className="min-w-full border-separate border-spacing-0">
           <thead>
             <tr className="text-left text-xs uppercase tracking-wide text-zinc-500">
-              <th className="border-b border-zinc-200 px-3 py-2">Data</th>
-              <th className="border-b border-zinc-200 px-3 py-2">Categoria</th>
-              <th className="border-b border-zinc-200 px-3 py-2">Descrição</th>
-              <th className="border-b border-zinc-200 px-3 py-2 text-right">Valor (CAD)</th>
+              <th className="border-b border-zinc-200 px-3 py-2">Date</th>
+              <th className="border-b border-zinc-200 px-3 py-2">Category</th>
+              <th className="border-b border-zinc-200 px-3 py-2">Description</th>
+              <th className="border-b border-zinc-200 px-3 py-2 text-right">Amount (CAD)</th>
             </tr>
           </thead>
           <tbody>
@@ -127,7 +128,7 @@ export function TransactionTable({
             {pageData.length === 0 ? (
               <tr>
                 <td colSpan={4} className="px-3 py-8 text-center text-sm text-zinc-500">
-                  Nenhuma transação encontrada para o filtro selecionado.
+                  No transactions found for the selected filter.
                 </td>
               </tr>
             ) : null}
@@ -137,24 +138,26 @@ export function TransactionTable({
 
       <footer className="mt-4 flex items-center justify-between text-sm text-zinc-600">
         <span>
-          Página {currentPage} de {totalPages}
+          Page {currentPage} of {totalPages}
         </span>
         <div className="flex gap-2">
           <button
+            data-testid="transaction-pagination-prev"
             type="button"
             onClick={() => setPage((current) => Math.max(1, current - 1))}
             disabled={currentPage === 1}
             className="rounded-md border border-zinc-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Anterior
+            Previous
           </button>
           <button
+            data-testid="transaction-pagination-next"
             type="button"
             onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
             className="rounded-md border border-zinc-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Próxima
+            Next
           </button>
         </div>
       </footer>

@@ -23,22 +23,22 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
   return (
     <section className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
       <header className="mb-4">
-        <h2 className="text-lg font-semibold text-zinc-900">Nova transação</h2>
+        <h2 className="text-lg font-semibold text-zinc-900">New transaction</h2>
         <p className="text-sm text-zinc-500">
-          Registre uma transação manualmente no seu dashboard.
+          Add a transaction manually to your dashboard.
         </p>
       </header>
 
       {!hasRequiredOptions ? (
         <p className="mb-4 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-800">
-          Não foi possível habilitar o formulário. Verifique se sua conta possui ao menos uma conta
-          financeira e uma categoria ativa.
+          Unable to enable the form. Ensure your account has at least one active financial account
+          and one active category.
         </p>
       ) : null}
 
       <form action={submitTransaction} className="grid gap-3 sm:grid-cols-2">
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Conta
+          Account
           <select
             name="accountId"
             required
@@ -55,7 +55,7 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Classificação
+          Transaction category
           <select
             name="categoryId"
             required
@@ -72,7 +72,7 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Tipo
+          Type
           <select
             name="type"
             required
@@ -80,14 +80,14 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             className="rounded-md border border-zinc-300 bg-white px-2 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
             defaultValue="EXPENSE"
           >
-            <option value="EXPENSE">Despesa</option>
-            <option value="INCOME">Receita</option>
-            <option value="TRANSFER">Transferência</option>
+            <option value="EXPENSE">Expense</option>
+            <option value="INCOME">Income</option>
+            <option value="TRANSFER">Transfer</option>
           </select>
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Valor
+          Amount
           <input
             name="amount"
             type="number"
@@ -101,7 +101,7 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Data
+          Date
           <input
             name="transactionAt"
             type="datetime-local"
@@ -113,7 +113,7 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </label>
 
         <label className="flex flex-col gap-1 text-sm text-zinc-700">
-          Moeda
+          Currency
           <input
             name="currency"
             type="text"
@@ -125,14 +125,14 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
         </label>
 
         <label className="sm:col-span-2 flex flex-col gap-1 text-sm text-zinc-700">
-          Descrição
+          Description
           <input
             name="description"
             type="text"
             maxLength={255}
             disabled={!hasRequiredOptions}
             className="rounded-md border border-zinc-300 bg-white px-2 py-2 text-sm focus:border-zinc-500 focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
-            placeholder="Ex.: supermercado"
+            placeholder="e.g., grocery store"
           />
         </label>
 
@@ -142,7 +142,7 @@ export function CreateTransactionForm({ accounts, categories }: CreateTransactio
             disabled={!hasRequiredOptions}
             className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 disabled:cursor-not-allowed disabled:opacity-50"
           >
-            Salvar transação
+            Save transaction
           </button>
         </div>
       </form>

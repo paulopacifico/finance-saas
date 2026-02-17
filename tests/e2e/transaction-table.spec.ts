@@ -4,18 +4,18 @@ test("filters transactions by category and paginates", async ({ page }) => {
   await page.goto("/dashboard");
 
   await expect(page.getByText("Finance Dashboard")).toBeVisible();
-  await expect(page.getByText("Página 1 de 2")).toBeVisible();
+  await expect(page.getByText("Page 1 of 2")).toBeVisible();
 
-  await page.getByLabel("Categoria").selectOption("Bills");
-  await expect(page.getByText("Página 1 de 1")).toBeVisible();
-  await expect(page.getByText("Internet residencial")).toBeVisible();
-  await expect(page.getByText("Eletricidade")).toBeVisible();
+  await page.getByTestId("transaction-category-filter").selectOption("Bills");
+  await expect(page.getByText("Page 1 of 1")).toBeVisible();
+  await expect(page.getByText("Home internet")).toBeVisible();
+  await expect(page.getByText("Electricity")).toBeVisible();
   await expect(page.getByText("Streaming")).toBeVisible();
 
-  await page.getByLabel("Categoria").selectOption("Todas");
-  await expect(page.getByText("Página 1 de 2")).toBeVisible();
+  await page.getByTestId("transaction-category-filter").selectOption("All");
+  await expect(page.getByText("Page 1 of 2")).toBeVisible();
 
-  await page.getByRole("button", { name: "Próxima" }).click();
-  await expect(page.getByText("Página 2 de 2")).toBeVisible();
-  await expect(page.getByText("Transporte público")).toBeVisible();
+  await page.getByTestId("transaction-pagination-next").click();
+  await expect(page.getByText("Page 2 of 2")).toBeVisible();
+  await expect(page.getByText("Public transit")).toBeVisible();
 });
