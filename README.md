@@ -1,6 +1,14 @@
-# Finance SaaS
+# Finflow (Finance SaaS) - Interview-Ready Project for Canada
 
-Finance SaaS is a micro SaaS for personal finance management in Canada (CAD-first), built with a privacy-first, multi-tenant architecture.
+Finflow is a CAD-first personal finance SaaS designed as a portfolio-grade project for software engineering interviews in Canada.
+
+It demonstrates how to build and ship a secure, multi-tenant fintech application with modern full-stack tooling, clear data isolation, and production-minded delivery practices.
+
+## Why This Project Is Strong for Interviews
+- It solves a real-world problem: personal finance management for Canadian users.
+- It uses a modern stack widely expected in Canadian startups and scale-ups.
+- It includes security and privacy controls that are relevant to Canadian compliance expectations.
+- It shows both product thinking (UX, onboarding, dashboard) and engineering rigor (tests, CI, deployment, runbooks).
 
 ## Tech Stack
 - Next.js (App Router)
@@ -13,53 +21,82 @@ Finance SaaS is a micro SaaS for personal finance management in Canada (CAD-firs
 - Vitest + Playwright
 - Vercel
 
-## Product Scope
-Current MVP includes:
-- user authentication
-- transaction CRUD foundations
-- accounts, categories, and budgets domain modeling
-- dashboard with filtering and pagination
+## Product Scope (Current)
+- Authentication (email/password + callback flow)
+- Dashboard with filtering and pagination
+- Transaction data model and retrieval
 - Plaid link token endpoint
+- Marketing landing pages and pricing sections
 
-## Architecture
-### Application Layers
+## Architecture at a Glance
+### Layers
 - `app/`: routes, server components, server actions, API handlers
-- `components/`: domain UI components (`marketing`, `transactions`, `ui`)
-- `lib/`: integrations (`supabase`, `prisma`, `plaid`), security and data modules
-- `prisma/`: schema and SQL migrations
+- `components/`: UI and feature components (`landing`, `marketing`, `transactions`, `ui`)
+- `lib/`: core integrations (`supabase`, `prisma`, `plaid`) + security modules
+- `prisma/`: schema and migration artifacts
 - `tests/`: unit and end-to-end tests
 
-### Data Design
-- tenant isolation by `userId`
-- monetary fields as `Decimal(14,2)`
-- soft-delete via `deletedAt`
-- indexed read paths for user/time-based queries
-- RLS-enabled tenant tables in Supabase
+### Multi-Tenant Data Design
+- Tenant isolation based on `userId`
+- Monetary fields as `Decimal(14,2)`
+- Soft-delete with `deletedAt`
+- Indexed read paths for user/time-based access
+- RLS-backed tables in Supabase
 
-## Security Model
+## Security and Privacy Controls
 - Tenant-scoped queries at application level (`where: { userId: ... }`)
-- Supabase RLS policies for tenant tables
-- Plaid endpoint requires authenticated user context
-- Plaid endpoint rate-limited (`429` + `Retry-After`)
-- `service_role` restricted to administrative/maintenance contexts
+- Supabase RLS policies for defense in depth
+- Auth-required Plaid endpoints
+- Rate limiting (`429` with `Retry-After`) on sensitive API routes
+- Restricted use of `SUPABASE_SERVICE_ROLE_KEY`
 
-Key references:
+References:
 - `docs/security/data-access-policy.md`
 - `prisma/validation/rls_smoke.sql`
 - `app/api/plaid/link/route.ts`
 
-## Environment Variables
-Create `.env` from `.env.example`:
+## Auth Flow (Interview Talking Point)
+- Sign-up and sign-in forms call Supabase Auth directly.
+- OAuth/magic-link callback route exchanges code for session.
+- Callback route uses dynamic request `origin` for safe production redirect behavior.
+
+Key files:
+- `app/(marketing)/login/page.tsx`
+- `app/(marketing)/signup/page.tsx`
+- `app/auth/callback/route.ts`
+- `lib/supabase/actions.ts`
+- `lib/supabase/client.ts`
+
+## Local Setup
+1. Clone and install dependencies:
+
+```bash
+git clone https://github.com/paulopacifico/finance-saas.git
+cd finance-saas
+npm ci
+```
+
+2. Create local environment:
 
 ```bash
 cp .env.example .env
 ```
 
-Core variables:
+3. Run development server:
+
+```bash
+npm run dev
+```
+
+4. Open:
+- `http://localhost:3000`
+
+## Environment Variables
+Required core variables:
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`)
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `PLAID_CLIENT_ID`
 - `PLAID_SECRET`
@@ -69,26 +106,6 @@ Core variables:
 - `PLAID_REDIRECT_URI`
 - `NEXT_PUBLIC_SITE_URL`
 
-## Local Development
-Install dependencies:
-
-```bash
-npm ci
-```
-
-Start development server:
-
-```bash
-npm run dev
-```
-
-Production build and run:
-
-```bash
-npm run build
-npm run start
-```
-
 ## Database and Migrations
 Generate Prisma client:
 
@@ -96,19 +113,19 @@ Generate Prisma client:
 npm run prisma:generate
 ```
 
-Create migration in development:
+Create migration (dev):
 
 ```bash
 npm run prisma:migrate:dev
 ```
 
-Apply migrations in deploy environments:
+Apply migration (deploy):
 
 ```bash
 npm run prisma:migrate:deploy
 ```
 
-## Validation and Tests
+## Tests and Quality Gates
 Lint:
 
 ```bash
@@ -136,63 +153,53 @@ PREVIEW_AUTH_COOKIE_VALUE="your-auth-cookie-value" \
 npm run test:e2e:preview
 ```
 
-All tests:
+Full suite:
 
 ```bash
 npm run test
 ```
 
-## CI
-Workflow: `.github/workflows/ci.yml`
-
-Pipeline gates:
-1. `lint` + `test:unit` (parallel)
-2. `build` + `test:e2e`
-3. preview/prod migration deploy + RLS smoke
-4. preview authenticated smoke (`test:e2e:preview`)
-
-Recommended repository protection:
-- require passing `CI` status checks on `main`
-- block merge on failing checks
-- block production promotion on failing checks
-- configure separate GitHub Environments (`preview`, `production`) with isolated DB secrets
-
-## RLS Smoke Test
-Script: `prisma/validation/rls_smoke.sql`
-
-Validates row isolation across:
-- `categories`
-- `transactions`
-- `accounts`
-- `budgets`
-
-Example execution:
-
-```bash
-psql "$DATABASE_URL" -v ON_ERROR_STOP=1 -f prisma/validation/rls_smoke.sql
-```
-
 ## Deployment (Vercel)
-Minimum release checklist:
-1. configure production environment variables
-2. run `prisma migrate deploy`
-3. run RLS smoke validation
-4. run CI checks (`lint`, `unit`, `e2e`, `build`)
-5. promote release
+Recommended release flow:
+1. Set production environment variables.
+2. Run `prisma migrate deploy`.
+3. Run RLS smoke test.
+4. Confirm CI checks (`lint`, `unit`, `e2e`, `build`).
+5. Promote deployment.
 
 Operational runbook:
 - `docs/operations/deploy-runbook.md`
-- includes rollback, Supabase PITR backup/restore workflow, and incident checklist
+
+## Canadian Interview Framing
+When presenting this project in an interview, focus on:
+- Data privacy and tenant isolation strategy
+- Risk reduction through layered controls (app-level + RLS)
+- Production-readiness choices (CI, runbooks, migration discipline)
+- Tradeoff decisions (velocity vs reliability, auth UX vs security)
+
+## Suggested 5-Minute Demo Script
+1. Show landing page and explain product scope.
+2. Walk through sign-up/login and callback route.
+3. Show dashboard filtering and pagination.
+4. Explain one API endpoint (`/api/plaid/link`) and its guardrails.
+5. Show test commands and CI expectations.
+
+## Common Interview Questions You Should Be Ready For
+- Why combine app-level tenant checks with database RLS?
+- How do you prevent callback redirect vulnerabilities?
+- How would you scale this for 10x users?
+- What would you add for compliance hardening in production?
+- What parts are MVP shortcuts and what parts are production-grade?
 
 ## Compliance Notes (Canada)
-This repository implements core technical controls, but production readiness requires additional operational controls:
-- published Privacy Policy and Terms
-- DSR process (access, correction, deletion)
-- data retention policy and disposal process
-- audit trail for sensitive data access
-- legal review for applicable Canadian privacy obligations
+This project includes technical controls, but production compliance still requires operational and legal processes:
+- Privacy Policy and Terms
+- DSR workflows (access/correction/deletion)
+- Data retention and disposal process
+- Auditability for sensitive access
+- Legal review against applicable Canadian obligations
 
-Compliance references and checklist:
+References:
 - `docs/compliance/canada-compliance-checklist.md`
 - `docs/operations/deploy-runbook.md`
 
@@ -207,4 +214,4 @@ public/
 ```
 
 ## License
-Private use. Define an explicit license before public distribution.
+Private project. Add an explicit license before public distribution.
