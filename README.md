@@ -1,14 +1,35 @@
-# Finflow (Finance SaaS) - Interview-Ready Project for Canada
+# Finflow (Finance SaaS)
 
-Finflow is a CAD-first personal finance SaaS designed as a portfolio-grade project for software engineering interviews in Canada.
+Finflow is a CAD-first personal finance SaaS built as an interview-ready portfolio project for software engineering roles in Canada.
 
-It demonstrates how to build and ship a secure, multi-tenant fintech application with modern full-stack tooling, clear data isolation, and production-minded delivery practices.
+The project emphasizes practical full-stack execution: secure multi-tenant data access, real authentication flows, API guardrails, testing, and production deployment on Vercel.
 
-## Why This Project Is Strong for Interviews
-- It solves a real-world problem: personal finance management for Canadian users.
-- It uses a modern stack widely expected in Canadian startups and scale-ups.
-- It includes security and privacy controls that are relevant to Canadian compliance expectations.
-- It shows both product thinking (UX, onboarding, dashboard) and engineering rigor (tests, CI, deployment, runbooks).
+## Project Progress Snapshot (February 2026)
+### Implemented
+- Marketing landing page (Next.js App Router) aligned with the fintech template system.
+- Email/password authentication UI wired to Supabase Auth:
+  - `signInWithPassword` on `/login`
+  - `signUp` on `/signup`
+- Auth callback route for OAuth/magic-link style flows:
+  - code exchange via `exchangeCodeForSession`
+  - safe redirect sanitization (`next` path validation)
+- Auth error fallback page (`/auth/auth-error`).
+- Protected dashboard access with authenticated user resolution.
+- Plaid link token API with auth and rate-limiting controls.
+- Core finance server actions and data retrieval modules.
+- Unit and E2E test suites running in CI.
+
+### In Progress / Next Improvements
+- Complete English-only copy across all dashboard and table labels.
+- Add explicit unit tests for `app/auth/callback/route.ts` success/failure branches.
+- Expand dashboard from current foundational views to full CRUD workflows.
+- Improve local/offline font strategy to avoid Google Fonts dependency during restricted-network builds.
+
+## Why This Project Is Strong for Interviews (Canada)
+- Realistic fintech domain constraints (privacy, tenant isolation, audited access).
+- Modern stack used by Canadian startups/scale-ups.
+- Clear technical tradeoffs and implementation decisions you can defend.
+- Delivery discipline: tests, deployment flow, migration and operations runbooks.
 
 ## Tech Stack
 - Next.js (App Router)
@@ -21,54 +42,56 @@ It demonstrates how to build and ship a secure, multi-tenant fintech application
 - Vitest + Playwright
 - Vercel
 
-## Product Scope (Current)
+## Current Product Scope
 - Authentication (email/password + callback flow)
-- Dashboard with filtering and pagination
-- Transaction data model and retrieval
+- Dashboard (authenticated access, filtering, pagination)
+- Transaction data retrieval and finance server actions
 - Plaid link token endpoint
-- Marketing landing pages and pricing sections
+- Marketing pages (home, pricing, features, legal pages)
 
-## Architecture at a Glance
+## Architecture Overview
 ### Layers
 - `app/`: routes, server components, server actions, API handlers
 - `components/`: UI and feature components (`landing`, `marketing`, `transactions`, `ui`)
-- `lib/`: core integrations (`supabase`, `prisma`, `plaid`) + security modules
+- `lib/`: integrations (`supabase`, `prisma`, `plaid`) + security/data modules
 - `prisma/`: schema and migration artifacts
-- `tests/`: unit and end-to-end tests
+- `tests/`: unit and E2E tests
 
-### Multi-Tenant Data Design
+### Multi-Tenant Data Model
 - Tenant isolation based on `userId`
 - Monetary fields as `Decimal(14,2)`
-- Soft-delete with `deletedAt`
-- Indexed read paths for user/time-based access
-- RLS-backed tables in Supabase
+- Soft-delete via `deletedAt`
+- Indexed read paths for tenant/time access patterns
+- Supabase RLS policies for defense in depth
 
 ## Security and Privacy Controls
-- Tenant-scoped queries at application level (`where: { userId: ... }`)
-- Supabase RLS policies for defense in depth
-- Auth-required Plaid endpoints
-- Rate limiting (`429` with `Retry-After`) on sensitive API routes
-- Restricted use of `SUPABASE_SERVICE_ROLE_KEY`
+- App-layer tenant scoping (`where: { userId: ... }`)
+- Supabase RLS for protected tables
+- Auth-required Plaid endpoint access
+- Rate limiting with `429` + `Retry-After`
+- Controlled usage of `SUPABASE_SERVICE_ROLE_KEY`
 
 References:
 - `docs/security/data-access-policy.md`
 - `prisma/validation/rls_smoke.sql`
 - `app/api/plaid/link/route.ts`
 
-## Auth Flow (Interview Talking Point)
-- Sign-up and sign-in forms call Supabase Auth directly.
-- OAuth/magic-link callback route exchanges code for session.
-- Callback route uses dynamic request `origin` for safe production redirect behavior.
+## Authentication Flow
+- `/login` -> Supabase `signInWithPassword`
+- `/signup` -> Supabase `signUp` with `emailRedirectTo`
+- `/auth/callback` -> `exchangeCodeForSession(code)` + safe redirect
+- `/auth/auth-error` -> fallback page for failed auth exchanges
 
 Key files:
 - `app/(marketing)/login/page.tsx`
 - `app/(marketing)/signup/page.tsx`
 - `app/auth/callback/route.ts`
+- `app/auth/auth-error/page.tsx`
 - `lib/supabase/actions.ts`
 - `lib/supabase/client.ts`
 
 ## Local Setup
-1. Clone and install dependencies:
+1. Clone and install:
 
 ```bash
 git clone https://github.com/paulopacifico/finance-saas.git
@@ -76,27 +99,26 @@ cd finance-saas
 npm ci
 ```
 
-2. Create local environment:
+2. Configure environment:
 
 ```bash
 cp .env.example .env
 ```
 
-3. Run development server:
+3. Run dev server:
 
 ```bash
 npm run dev
 ```
 
-4. Open:
-- `http://localhost:3000`
+4. Open `http://localhost:3000`
 
 ## Environment Variables
-Required core variables:
+Core variables:
 - `DATABASE_URL`
 - `DIRECT_URL`
 - `NEXT_PUBLIC_SUPABASE_URL`
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` (or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`)
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` or `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY`
 - `SUPABASE_SERVICE_ROLE_KEY`
 - `PLAID_CLIENT_ID`
 - `PLAID_SECRET`
@@ -107,41 +129,18 @@ Required core variables:
 - `NEXT_PUBLIC_SITE_URL`
 
 ## Database and Migrations
-Generate Prisma client:
-
 ```bash
 npm run prisma:generate
-```
-
-Create migration (dev):
-
-```bash
 npm run prisma:migrate:dev
-```
-
-Apply migration (deploy):
-
-```bash
 npm run prisma:migrate:deploy
 ```
 
-## Tests and Quality Gates
-Lint:
-
+## Testing and Quality Gates
 ```bash
 npm run lint
-```
-
-Unit tests:
-
-```bash
 npm run test:unit
-```
-
-E2E tests:
-
-```bash
 npm run test:e2e
+npm run test
 ```
 
 Preview authenticated smoke:
@@ -153,51 +152,37 @@ PREVIEW_AUTH_COOKIE_VALUE="your-auth-cookie-value" \
 npm run test:e2e:preview
 ```
 
-Full suite:
-
-```bash
-npm run test
-```
-
 ## Deployment (Vercel)
 Recommended release flow:
-1. Set production environment variables.
+1. Configure production environment variables.
 2. Run `prisma migrate deploy`.
-3. Run RLS smoke test.
+3. Run RLS smoke validation.
 4. Confirm CI checks (`lint`, `unit`, `e2e`, `build`).
 5. Promote deployment.
 
 Operational runbook:
 - `docs/operations/deploy-runbook.md`
 
-## Canadian Interview Framing
-When presenting this project in an interview, focus on:
-- Data privacy and tenant isolation strategy
-- Risk reduction through layered controls (app-level + RLS)
-- Production-readiness choices (CI, runbooks, migration discipline)
-- Tradeoff decisions (velocity vs reliability, auth UX vs security)
+## Interview Demo Script (5 Minutes)
+1. Show the landing page and product positioning.
+2. Walk through signup/login and callback flow.
+3. Open `/dashboard` and explain auth + tenant-scoped reads.
+4. Show one protected API route (`/api/plaid/link`) and guardrails.
+5. Show tests and deployment flow.
 
-## Suggested 5-Minute Demo Script
-1. Show landing page and explain product scope.
-2. Walk through sign-up/login and callback route.
-3. Show dashboard filtering and pagination.
-4. Explain one API endpoint (`/api/plaid/link`) and its guardrails.
-5. Show test commands and CI expectations.
-
-## Common Interview Questions You Should Be Ready For
+## Common Interview Questions to Prepare
 - Why combine app-level tenant checks with database RLS?
-- How do you prevent callback redirect vulnerabilities?
-- How would you scale this for 10x users?
-- What would you add for compliance hardening in production?
-- What parts are MVP shortcuts and what parts are production-grade?
+- How do you prevent open redirect vulnerabilities in auth callbacks?
+- What are the next reliability/compliance steps for production?
+- Which parts are MVP shortcuts vs. production-grade controls?
 
 ## Compliance Notes (Canada)
-This project includes technical controls, but production compliance still requires operational and legal processes:
-- Privacy Policy and Terms
+This repository includes core technical controls, but full production compliance still needs legal and operational processes:
+- Public Privacy Policy and Terms
 - DSR workflows (access/correction/deletion)
-- Data retention and disposal process
-- Auditability for sensitive access
-- Legal review against applicable Canadian obligations
+- Data retention/disposal process
+- Auditable sensitive access controls
+- Legal review for applicable Canadian obligations
 
 References:
 - `docs/compliance/canada-compliance-checklist.md`
