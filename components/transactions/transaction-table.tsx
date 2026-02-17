@@ -68,16 +68,16 @@ export function TransactionTable({
   }, [filteredTransactions, currentPage, defaultPageSize]);
 
   return (
-    <section className="w-full rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
-      <header className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+    <section className="w-full overflow-hidden rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] shadow-[0_20px_50px_rgba(0,0,0,0.3)]">
+      <header className="flex flex-col gap-3 border-b border-[var(--border)] px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-zinc-900">Transactions</h2>
-          <p className="text-sm text-zinc-500">
+          <h2 className="text-lg font-semibold text-[var(--text-primary)]">Transactions</h2>
+          <p className="text-sm text-[var(--text-secondary)]">
             {filteredTransactions.length} record(s) found
           </p>
         </div>
 
-        <label className="flex items-center gap-2 text-sm text-zinc-700">
+        <label className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
           Category
           <select
             data-testid="transaction-category-filter"
@@ -86,7 +86,7 @@ export function TransactionTable({
               setSelectedCategory(event.target.value);
               setPage(1);
             }}
-            className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-sm focus:border-zinc-500 focus:outline-none"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-1.5 text-sm text-[var(--text-primary)] focus:border-[var(--border-hover)] focus:outline-none focus:ring-2 focus:ring-[var(--accent-glow)]"
           >
             <option value="all">All</option>
             {categories.map((category) => (
@@ -101,33 +101,49 @@ export function TransactionTable({
       <div className="overflow-x-auto">
         <table className="min-w-full border-separate border-spacing-0">
           <thead>
-            <tr className="text-left text-xs uppercase tracking-wide text-zinc-500">
-              <th className="border-b border-zinc-200 px-3 py-2">Date</th>
-              <th className="border-b border-zinc-200 px-3 py-2">Category</th>
-              <th className="border-b border-zinc-200 px-3 py-2">Description</th>
-              <th className="border-b border-zinc-200 px-3 py-2 text-right">Amount (CAD)</th>
+            <tr className="text-left text-xs uppercase tracking-wide text-[var(--text-muted)]">
+              <th className="border-b border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-3">
+                Date
+              </th>
+              <th className="border-b border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-3">
+                Category
+              </th>
+              <th className="border-b border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-3">
+                Description
+              </th>
+              <th className="border-b border-[var(--border)] bg-[var(--bg-secondary)] px-4 py-3 text-right">
+                Amount (CAD)
+              </th>
             </tr>
           </thead>
           <tbody>
             {pageData.map((transaction) => (
-              <tr key={transaction.id} className="text-sm text-zinc-800">
-                <td className="border-b border-zinc-100 px-3 py-3">
+              <tr
+                key={transaction.id}
+                className="text-sm text-[var(--text-primary)] transition-colors hover:bg-[var(--bg-card-hover)]"
+              >
+                <td className="border-b border-[var(--border)] px-4 py-3">
                   {dateFormatter.format(new Date(transaction.transactionAt))}
                 </td>
-                <td className="border-b border-zinc-100 px-3 py-3">
-                  {transaction.category?.name ?? "Uncategorized"}
+                <td className="border-b border-[var(--border)] px-4 py-3">
+                  <span className="inline-flex rounded-full border border-[var(--border)] bg-[var(--bg-secondary)] px-2 py-0.5 text-xs text-[var(--text-secondary)]">
+                    {transaction.category?.name ?? "Uncategorized"}
+                  </span>
                 </td>
-                <td className="border-b border-zinc-100 px-3 py-3">
-                  {transaction.description || "-"}
+                <td className="border-b border-[var(--border)] px-4 py-3 text-[var(--text-secondary)]">
+                  {transaction.description || "No description"}
                 </td>
-                <td className="border-b border-zinc-100 px-3 py-3 text-right font-medium">
+                <td className="border-b border-[var(--border)] px-4 py-3 text-right font-semibold tabular-nums text-[var(--accent)]">
                   {formatAmount(transaction.amount)}
                 </td>
               </tr>
             ))}
             {pageData.length === 0 ? (
               <tr>
-                <td colSpan={4} className="px-3 py-8 text-center text-sm text-zinc-500">
+                <td
+                  colSpan={4}
+                  className="px-4 py-8 text-center text-sm text-[var(--text-secondary)]"
+                >
                   No transactions found for the selected filter.
                 </td>
               </tr>
@@ -136,7 +152,7 @@ export function TransactionTable({
         </table>
       </div>
 
-      <footer className="mt-4 flex items-center justify-between text-sm text-zinc-600">
+      <footer className="flex items-center justify-between border-t border-[var(--border)] px-5 py-4 text-sm text-[var(--text-secondary)]">
         <span>
           Page {currentPage} of {totalPages}
         </span>
@@ -146,7 +162,7 @@ export function TransactionTable({
             type="button"
             onClick={() => setPage((current) => Math.max(1, current - 1))}
             disabled={currentPage === 1}
-            className="rounded-md border border-zinc-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-1.5 text-[var(--text-primary)] transition hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Previous
           </button>
@@ -155,7 +171,7 @@ export function TransactionTable({
             type="button"
             onClick={() => setPage(Math.min(totalPages, currentPage + 1))}
             disabled={currentPage === totalPages}
-            className="rounded-md border border-zinc-300 px-3 py-1 disabled:cursor-not-allowed disabled:opacity-50"
+            className="rounded-lg border border-[var(--border)] bg-[var(--bg-secondary)] px-3 py-1.5 text-[var(--text-primary)] transition hover:border-[var(--border-hover)] hover:bg-[var(--bg-card-hover)] disabled:cursor-not-allowed disabled:opacity-40"
           >
             Next
           </button>
