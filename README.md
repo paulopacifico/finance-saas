@@ -1,6 +1,4 @@
-# Finflow (Finance SaaS)
-
-Finflow is a CAD-first personal finance SaaS built as an interview-ready portfolio project for software engineering roles in Canada.
+# Finance SaaS
 
 The project emphasizes practical full-stack execution: secure multi-tenant data access, real authentication flows, API guardrails, testing, and production deployment on Vercel.
 
@@ -24,13 +22,7 @@ The project emphasizes practical full-stack execution: secure multi-tenant data 
 - Add explicit unit tests for `app/auth/callback/route.ts` success/failure branches.
 - Expand dashboard from current foundational views to full CRUD workflows.
 - Improve local/offline font strategy to avoid Google Fonts dependency during restricted-network builds.
-
-## Why This Project Is Strong for Interviews (Canada)
-- Realistic fintech domain constraints (privacy, tenant isolation, audited access).
-- Modern stack used by Canadian startups/scale-ups.
-- Clear technical tradeoffs and implementation decisions you can defend.
-- Delivery discipline: tests, deployment flow, migration and operations runbooks.
-
+- 
 ## Tech Stack
 - Next.js (App Router)
 - TypeScript
@@ -162,13 +154,6 @@ Recommended release flow:
 
 Operational runbook:
 - `docs/operations/deploy-runbook.md`
-
-## Interview Demo Script (5 Minutes)
-1. Show the landing page and product positioning.
-2. Walk through signup/login and callback flow.
-3. Open `/dashboard` and explain auth + tenant-scoped reads.
-4. Show one protected API route (`/api/plaid/link`) and guardrails.
-5. Show tests and deployment flow.
 
 ## Common Interview Questions to Prepare
 - Why combine app-level tenant checks with database RLS?
