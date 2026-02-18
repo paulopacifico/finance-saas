@@ -10,6 +10,7 @@ import {
 import { useMemo } from "react";
 
 import {
+  type CategoryPoint,
   CashflowTrendChart,
   CategoryBreakdownChart,
   MonthlyComparisonChart,
@@ -44,6 +45,8 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
     const currentMonth = monthKey(now);
     const previousMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     const previousMonth = monthKey(previousMonthDate);
+    const last90Days = new Date(now);
+    last90Days.setDate(now.getDate() - 90);
 
     let income = 0;
     let expense = 0;
@@ -56,7 +59,9 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
       TRANSFER: 0,
     };
 
-    const expenseByCategory = new Map<string, number>();
+    const expenseByCategoryCurrentMonth = new Map<string, number>();
+    const expenseByCategoryLast90Days = new Map<string, number>();
+    const expenseByCategoryAllTime = new Map<string, number>();
 
     const monthlySeries = new Map<
       string,
@@ -84,7 +89,25 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
         } else if (transaction.type === "EXPENSE") {
           expense += amount;
           const categoryName = transaction.category?.name ?? "Uncategorized";
-          expenseByCategory.set(categoryName, (expenseByCategory.get(categoryName) ?? 0) + amount);
+          expenseByCategoryCurrentMonth.set(
+            categoryName,
+            (expenseByCategoryCurrentMonth.get(categoryName) ?? 0) + amount,
+          );
+        }
+      }
+
+      if (transaction.type === "EXPENSE") {
+        const categoryName = transaction.category?.name ?? "Uncategorized";
+        expenseByCategoryAllTime.set(
+          categoryName,
+          (expenseByCategoryAllTime.get(categoryName) ?? 0) + amount,
+        );
+
+        if (txDate >= last90Days && txDate <= now) {
+          expenseByCategoryLast90Days.set(
+            categoryName,
+            (expenseByCategoryLast90Days.get(categoryName) ?? 0) + amount,
+          );
         }
       }
 
@@ -127,10 +150,30 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
       };
     });
 
-    const categoryBreakdown = Array.from(expenseByCategory.entries())
-      .sort((a, b) => b[1] - a[1])
-      .slice(0, 6)
-      .map(([label, value]) => ({ label, value }));
+    const toCategoryPoints = (map: Map<string, number>): CategoryPoint[] =>
+      Array.from(map.entries())
+        .filter(([, value]) => value > 0)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 6)
+        .map(([label, value]) => ({ label, value }));
+
+    const currentMonthBreakdown = toCategoryPoints(expenseByCategoryCurrentMonth);
+    const last90DaysBreakdown = toCategoryPoints(expenseByCategoryLast90Days);
+    const allTimeBreakdown = toCategoryPoints(expenseByCategoryAllTime);
+
+    const categoryBreakdown =
+      currentMonthBreakdown.length > 0
+        ? currentMonthBreakdown
+        : last90DaysBreakdown.length > 0
+          ? last90DaysBreakdown
+          : allTimeBreakdown;
+
+    const categoryBreakdownSubtitle =
+      currentMonthBreakdown.length > 0
+        ? "Current month expenses"
+        : last90DaysBreakdown.length > 0
+          ? "Last 90 days expenses"
+          : "All-time expenses";
 
     return {
       totalBalance,
@@ -141,6 +184,7 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
       typeCount,
       chartPoints,
       categoryBreakdown,
+      categoryBreakdownSubtitle,
     };
   }, [accounts, transactions]);
 
@@ -184,7 +228,10 @@ export function DashboardOverview({ transactions, accounts }: DashboardOverviewP
 
       <div className="grid gap-4 xl:grid-cols-2">
         <CashflowTrendChart points={summary.chartPoints} />
-        <CategoryBreakdownChart points={summary.categoryBreakdown} />
+        <CategoryBreakdownChart
+          points={summary.categoryBreakdown}
+          subtitle={summary.categoryBreakdownSubtitle}
+        />
       </div>
 
       <MonthlyComparisonChart points={summary.chartPoints.slice(-4)} />

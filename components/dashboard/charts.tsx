@@ -4,7 +4,7 @@ type TrendPoint = {
   expense: number;
 };
 
-type CategoryPoint = {
+export type CategoryPoint = {
   label: string;
   value: number;
 };
@@ -115,11 +115,17 @@ export function CashflowTrendChart({ points }: { points: TrendPoint[] }) {
   );
 }
 
-export function CategoryBreakdownChart({ points }: { points: CategoryPoint[] }) {
+export function CategoryBreakdownChart({
+  points,
+  subtitle = "Current month expenses",
+}: {
+  points: CategoryPoint[];
+  subtitle?: string;
+}) {
   const total = points.reduce((sum, point) => sum + point.value, 0);
   const safePoints = points.slice(0, 6);
   const gradient =
-    safePoints.length === 0
+    safePoints.length === 0 || total <= 0
       ? "conic-gradient(from 0deg, rgba(161,161,170,0.25) 0deg 360deg)"
       : `conic-gradient(${safePoints
           .reduce<{ stops: string[]; acc: number }>(
@@ -139,7 +145,7 @@ export function CategoryBreakdownChart({ points }: { points: CategoryPoint[] }) 
     <section className="rounded-2xl border border-[var(--border)] bg-[var(--bg-card)] p-4">
       <header className="mb-4 flex items-center justify-between">
         <h3 className="text-sm font-semibold text-[var(--text-primary)]">Category breakdown</h3>
-        <p className="text-xs text-[var(--text-muted)]">Current month expenses</p>
+        <p className="text-xs text-[var(--text-muted)]">{subtitle}</p>
       </header>
       <div className="grid gap-4 sm:grid-cols-[160px_1fr]">
         <div className="mx-auto h-40 w-40 rounded-full p-4" style={{ background: gradient }}>
