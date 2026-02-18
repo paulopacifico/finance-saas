@@ -9,7 +9,7 @@ const nextConfig = {
   },
   compress: true,
   experimental: {
-    optimizeCss: true,
+    optimizeCss: process.env.NODE_ENV === "production",
     optimizePackageImports: ["lucide-react"],
   },
 };
