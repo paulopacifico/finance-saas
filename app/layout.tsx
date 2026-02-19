@@ -29,12 +29,24 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "/",
     siteName: "Finflow",
+    title: "Finflow - Smart Finance Management for Modern Teams",
+    description:
+      "Manage your finances easily and with confidence. Real-time analytics, smart budgeting, and automated reports.",
+    images: [
+      {
+        url: "/landing/images/hero-dashboard.webp",
+        width: 1200,
+        height: 630,
+        alt: "Finflow dashboard preview",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Finflow - Smart Finance Management for Modern Teams",
     description:
       "Manage your finances easily and with confidence. Real-time analytics, smart budgeting, and automated reports.",
+    images: ["/landing/images/hero-dashboard.webp"],
   },
 };
 

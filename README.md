@@ -49,6 +49,28 @@ The project emphasizes practical full-stack execution: secure multi-tenant data 
 - `prisma/`: schema and migration artifacts
 - `tests/`: unit and E2E tests
 
+### Landing Frontend Organization
+- Shared hooks:
+  - `lib/hooks/useReducedMotion.ts`
+- Shared landing constants:
+  - `lib/landing/constants.ts`
+  - `lib/landing/animations.ts`
+- Shared tracking utility:
+  - `lib/analytics/tracking.ts`
+- Landing organisms:
+  - `components/landing/Hero.tsx`
+  - `components/landing/Features.tsx`
+  - `components/landing/Pricing.tsx`
+  - `components/landing/Testimonials.tsx`
+  - `components/landing/Footer.tsx`
+- Global interaction layer:
+  - `components/landing/MicroInteractions.tsx`
+
+## Design and Animation Docs
+- Design system: `docs/design-system/landing-design-system.md`
+- Animation timing: `docs/design-system/animation-timing-reference.md`
+- Component notes: `docs/components/landing-components.md`
+
 ### Multi-Tenant Data Model
 - Tenant isolation based on `userId`
 - Monetary fields as `Decimal(14,2)`
@@ -154,6 +176,15 @@ Recommended release flow:
 
 Operational runbook:
 - `docs/operations/deploy-runbook.md`
+- `docs/operations/production-checklist.md`
+- `docs/operations/analytics-event-schema.md`
+
+## Production Readiness Notes
+- Open Graph and Twitter metadata configured in `app/layout.tsx`.
+- Global error boundary: `app/error.tsx`.
+- Custom 404 page: `app/not-found.tsx`.
+- Conversion tracking hooks are wired through `lib/analytics/tracking.ts`.
+- Forms include loading/success/error handling (`components/landing/Footer.tsx`).
 
 ## Common Interview Questions to Prepare
 - Why combine app-level tenant checks with database RLS?
