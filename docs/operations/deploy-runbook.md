@@ -28,6 +28,10 @@ Required Vercel environment variables:
 - `PLAID_REDIRECT_URI`
 - `NEXT_PUBLIC_SITE_URL`
 
+Required Supabase Auth security settings (Dashboard -> Authentication -> Settings -> Security):
+- Leaked password protection: enabled
+- Password minimum length: 12 or higher
+
 ## Pipeline Behavior
 Workflow: `.github/workflows/ci.yml`
 
@@ -53,6 +57,7 @@ For pushes to `main`:
 3. Confirm Vercel production deployment is healthy.
 4. Verify key user journeys:
    - login
+   - signup rejects compromised passwords with a clear message
    - dashboard load
    - create transaction
    - Plaid link token request

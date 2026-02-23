@@ -26,3 +26,5 @@
 - [ ] Cross-browser QA (Chrome, Firefox, Safari, Edge)
 - [ ] Device QA (iPhone, Android, iPad)
 - [ ] Conversion events verified in analytics provider
+- [ ] Supabase leaked password protection is enabled (Dashboard -> Authentication -> Settings -> Security)
+- [ ] Signup rejects compromised passwords with a user-friendly error message

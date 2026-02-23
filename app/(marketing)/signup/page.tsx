@@ -4,6 +4,11 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { FormEvent, useState } from "react";
 
+import {
+  mapSupabaseAuthError,
+  SIGNUP_MIN_PASSWORD_LENGTH,
+  validateSignupPassword,
+} from "@/lib/supabase/auth-errors";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 export default function SignupPage() {
@@ -19,6 +24,13 @@ export default function SignupPage() {
     event.preventDefault();
     setErrorMessage(null);
     setSuccessMessage(null);
+
+    const passwordValidationError = validateSignupPassword(password);
+    if (passwordValidationError) {
+      setErrorMessage(passwordValidationError);
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -36,7 +48,7 @@ export default function SignupPage() {
       });
 
       if (error) {
-        setErrorMessage(error.message);
+        setErrorMessage(mapSupabaseAuthError(error));
         return;
       }
 
@@ -106,14 +118,18 @@ export default function SignupPage() {
             <input
               id="signup-password"
               type="password"
-              placeholder="At least 8 characters"
+              placeholder={`At least ${SIGNUP_MIN_PASSWORD_LENGTH} characters`}
               autoComplete="new-password"
               value={password}
               onChange={(event) => setPassword(event.target.value)}
               required
-              minLength={8}
+              minLength={SIGNUP_MIN_PASSWORD_LENGTH}
               className="w-full rounded-md border border-[var(--border)] bg-[var(--bg-elevated)] px-3 py-2 text-sm text-[var(--text-primary)] outline-none placeholder:text-[var(--text-muted)] focus:border-[var(--border-hover)]"
             />
+            <p className="text-xs text-[var(--text-muted)]">
+              Use at least {SIGNUP_MIN_PASSWORD_LENGTH} characters. Passwords exposed in known data
+              breaches are rejected.
+            </p>
           </div>
 
           {errorMessage ? (
